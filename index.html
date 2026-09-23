@@ -56,12 +56,18 @@
 
   *{box-sizing:border-box}
   html,body{height:100%}
+  /* Sin zoom por doble toque. "manipulation" solo desactiva ese gesto:
+     el desplazamiento y el pellizco para ampliar siguen funcionando. */
+  html,body{touch-action:manipulation}
   body{
     margin:0;background:var(--sunken);color:var(--ink);
     font-family:var(--f-body);
     font-size:16px;line-height:1.5;overflow:hidden;
     -webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;
   }
+  .app,.screens,.screen,.card,
+  button,input,label,a,.ex,.ex-top,.set,.tick,.tabs button,.picker button,
+  .cta,.reset,.rest button{touch-action:manipulation}
   button,input{font:inherit;color:inherit}
   :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   h1,h2,h3,.dsp{font-family:var(--f-dsp);letter-spacing:-.015em}
