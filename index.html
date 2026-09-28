@@ -9,7 +9,10 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Bloque de Corte">
+<meta name="apple-mobile-web-app-title" content="Rutina">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
 <title>Bloque de Corte</title>
 <script>document.documentElement.className+=" js";</script>
 <style>
@@ -67,7 +70,7 @@
   }
   .app,.screens,.screen,.card,
   button,input,label,a,.ex,.ex-top,.set,.tick,.tabs button,.picker button,
-  .cta,.reset,.rest button{touch-action:manipulation}
+  .cta,.reset{touch-action:manipulation}
   button,input{font:inherit;color:inherit}
   :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   h1,h2,h3,.dsp{font-family:var(--f-dsp);letter-spacing:-.015em}
@@ -89,17 +92,20 @@
     padding:calc(12px + env(safe-area-inset-top)) 18px 12px;
     background:var(--surface);border-bottom:1px solid var(--line);
   }
+  .mark{display:flex;align-items:center;gap:10px;min-width:0}
+  .logo{width:30px;height:30px;flex:none;display:block}
   .brand{display:flex;flex-direction:column;line-height:1.15}
   .brand .kicker{
     font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);
     font-family:var(--f-mono);font-weight:600;
   }
-  .brand .name{font-size:1.3rem;font-weight:700;text-transform:uppercase;letter-spacing:.01em}
+  .brand .name{font-size:1.12rem;font-weight:700;text-transform:uppercase;letter-spacing:.01em;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .sync{
     display:flex;align-items:center;gap:6px;font-size:.66rem;letter-spacing:.08em;
     text-transform:uppercase;color:var(--ink-3);font-family:var(--f-mono);
-    border:1px solid var(--line);border-radius:999px;padding:4px 9px;background:var(--surface-2);
-    text-align:right;white-space:nowrap;
+    border:1px solid var(--line);border-radius:999px;padding:4px 8px;background:var(--surface-2);
+    text-align:right;white-space:nowrap;flex:none;font-size:.6rem;
   }
   .sync .led{width:7px;height:7px;border-radius:50%;background:var(--ink-3);flex:none}
   .sync[data-s="ok"] .led{background:var(--good)}
@@ -107,7 +113,7 @@
   .sync[data-s="local"] .led{background:var(--ink-3)}
 
   .screens{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
-  .screen{display:none;padding:18px 16px 132px}
+  .screen{display:none;padding:18px 16px 32px}
   .screen.on{display:block}
 
   /* ---- tab bar ---- */
@@ -221,28 +227,6 @@
   .set.done .tick{background:var(--plate);border-color:var(--plate)}
   .set.done .tick::after{border-color:var(--plate-ink)}
 
-  /* ---- rest timer ---- */
-  .rest{
-    position:absolute;left:12px;right:12px;bottom:calc(66px + env(safe-area-inset-bottom));
-    background:var(--ink);color:var(--bg);border-radius:var(--r);
-    padding:11px 14px;display:none;align-items:center;gap:12px;
-    box-shadow:0 12px 30px -12px rgba(0,0,0,.55);z-index:30;
-  }
-  .rest.on{display:flex}
-  .rest .t{
-    font-family:var(--f-mono);font-size:1.35rem;font-weight:600;
-    font-variant-numeric:tabular-nums;letter-spacing:-.02em;
-  }
-  .rest .who{flex:1;min-width:0;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;
-    font-family:var(--f-mono);opacity:.7;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .rest button{
-    background:none;border:1px solid currentColor;border-radius:7px;padding:5px 10px;
-    font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;opacity:.85;
-    font-family:var(--f-mono);
-  }
-  .rest.ring{animation:pulse .5s ease 3}
-  @keyframes pulse{50%{background:var(--accent);color:var(--on-accent)}}
-
   /* ---- rest day / cta ---- */
   .cta{
     width:100%;margin-top:14px;padding:14px;border-radius:var(--r);cursor:pointer;
@@ -304,7 +288,6 @@
   html:not(.js) .app{height:auto;min-height:0;overflow:visible}
   html:not(.js) .screens{overflow:visible}
   html:not(.js) .tabs,
-  html:not(.js) .rest,
   html:not(.js) .sync{display:none}
 </style>
 </head>
@@ -313,9 +296,16 @@
 <div class="app">
 
   <div class="topbar">
-    <div class="brand">
-      <span class="kicker">Semana de 5 días</span>
-      <span class="name">Bloque de corte</span>
+    <div class="mark">
+      <svg class="logo" viewBox="0 0 32 32" role="img" aria-label="Bloque de corte">
+        <rect x="0" y="13.4" width="32" height="5.2" rx="2.6" fill="var(--ink-3)"/>
+        <circle cx="16" cy="16" r="12" fill="var(--accent)"/>
+        <circle cx="16" cy="16" r="4.1" fill="var(--surface)"/>
+      </svg>
+      <div class="brand">
+        <span class="kicker">Semana de 5 días</span>
+        <span class="name">Bloque de corte</span>
+      </div>
     </div>
     <div class="sync" id="sync" data-s="local"><span class="led"></span><span id="syncTxt">Local</span></div>
   </div>
@@ -464,13 +454,6 @@
         molestias articulares o dudas sobre el déficit calórico, consúltalo antes de empezar.</p>
       </div>
     </section>
-  </div>
-
-  <div class="rest" id="rest">
-    <span class="t mono" id="restT">0:00</span>
-    <span class="who" id="restWho"></span>
-    <button type="button" id="restAdd">+30 s</button>
-    <button type="button" id="restSkip">Saltar</button>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -852,81 +835,6 @@ function renderWeek(){
   }).join("");
 }
 
-/* ---------------------------------------------------------------- timer
-   Guardamos la HORA DE FIN, no los segundos que faltan: el movil congela
-   los intervalos al salir de la app, pero el reloj del sistema sigue. Al
-   volver recalculamos contra Date.now() y el descanso cuadra. Ademas lo
-   dejamos en localStorage para que sobreviva a que el sistema descarte
-   la pagina.                                                              */
-var REST_KEY = "bloque-corte-rest-v1";
-var restEnd = 0, restWho = "", restInt = null, restBye = null;
-
-function guardaRest(){
-  try{
-    if (restEnd > Date.now()) localStorage.setItem(REST_KEY, JSON.stringify({end:restEnd, who:restWho}));
-    else localStorage.removeItem(REST_KEY);
-  }catch(e){}
-}
-function restQueda(){
-  return Math.max(0, Math.ceil((restEnd - Date.now()) / 1000));
-}
-function marchaRest(){
-  clearInterval(restInt);
-  restInt = setInterval(tickRest, 500);
-}
-function startRest(sec, who){
-  clearTimeout(restBye); restBye = null;
-  restEnd = Date.now() + sec * 1000;
-  restWho = who;
-  document.getElementById("restWho").textContent = who;
-  document.getElementById("rest").classList.add("on");
-  document.getElementById("rest").classList.remove("ring");
-  guardaRest();
-  paintRest();
-  marchaRest();
-}
-function tickRest(){
-  var left = restQueda();
-  paintRest(left);
-  if (left <= 0){
-    clearInterval(restInt); restInt = null;
-    document.getElementById("rest").classList.add("ring");
-    if (navigator.vibrate) { try{ navigator.vibrate([180,90,180]); }catch(e){} }
-    try{ localStorage.removeItem(REST_KEY); }catch(e){}
-    clearTimeout(restBye);
-    restBye = setTimeout(stopRest, 2500);
-  }
-}
-function paintRest(left){
-  if (left === undefined) left = restQueda();
-  var m = Math.floor(left/60), s = left%60;
-  document.getElementById("restT").textContent = m+":"+String(s).padStart(2,"0");
-}
-function stopRest(){
-  clearInterval(restInt); restInt = null;
-  clearTimeout(restBye); restBye = null;
-  restEnd = 0;
-  try{ localStorage.removeItem(REST_KEY); }catch(e){}
-  document.getElementById("rest").classList.remove("on","ring");
-}
-function reanudaRest(){
-  var raw = null, d = null;
-  try{ raw = localStorage.getItem(REST_KEY); }catch(e){}
-  if (!raw) return;
-  try{ d = JSON.parse(raw); }catch(e){}
-  if (!d || !d.end || d.end <= Date.now()){
-    try{ localStorage.removeItem(REST_KEY); }catch(e){}
-    return;
-  }
-  restEnd = d.end;
-  restWho = d.who || "";
-  document.getElementById("restWho").textContent = restWho;
-  document.getElementById("rest").classList.add("on");
-  document.getElementById("rest").classList.remove("ring");
-  paintRest();
-  marchaRest();
-}
-
 function toast(msg){
   var t = document.getElementById("toast");
   t.textContent = msg;
@@ -1004,8 +912,6 @@ function bindSets(card, i){
       this.setAttribute("aria-pressed", arr[j].done ? "true" : "false");
       save();
       refreshCounts();
-      if (arr[j].done) startRest(e.rest, e.n);
-      else stopRest();
     });
   });
 }
@@ -1042,17 +948,6 @@ document.querySelectorAll(".tabs button").forEach(function(b){
   });
 });
 
-document.getElementById("restAdd").addEventListener("click", function(){
-  if (!restEnd) return;
-  clearTimeout(restBye); restBye = null;
-  restEnd = Math.max(restEnd, Date.now()) + 30000;
-  guardaRest();
-  document.getElementById("rest").classList.remove("ring");
-  paintRest();
-  if (!restInt) marchaRest();
-});
-document.getElementById("restSkip").addEventListener("click", stopRest);
-
 (function(){
   var wipe = document.getElementById("wipe"), armed = false, t = null;
   wipe.addEventListener("click", function(){
@@ -1071,18 +966,11 @@ document.getElementById("restSkip").addEventListener("click", stopRest);
 })();
 
 document.addEventListener("visibilitychange", function(){
-  if (document.visibilityState === "hidden"){
-    flushSync();
-    guardaRest();
-    return;
-  }
-  if (restEnd){ tickRest(); if (!restInt && restQueda() > 0) marchaRest(); }
+  if (document.visibilityState === "hidden") flushSync();
 });
-window.addEventListener("pageshow", function(){ if (restEnd) tickRest(); });
 
 /* ---------------------------------------------------------------- boot */
 loadLocal();
-reanudaRest();
 renderHoy();
 renderPlan();
 bindPlan();
