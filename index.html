@@ -162,6 +162,7 @@
     margin:2px 0 0;font-family:var(--f-mono);font-size:.68rem;
     letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);
   }
+  .daynote{margin:12px 0 0;font-size:.85rem;color:var(--ink-2);font-style:italic}
   .meter{display:flex;align-items:center;gap:10px;margin-top:14px}
   .meter .bar{flex:1;height:6px;border-radius:4px;background:var(--sunken);overflow:hidden}
   .meter .bar i{display:block;height:100%;width:0;background:var(--plate,var(--accent));transition:width .25s ease}
@@ -374,29 +375,50 @@
         </div>
 
         <div class="note">
-          <p><strong>Calentamiento, 8 min.</strong> 4–5 min de bici o cinta suave, movilidad de la
-          articulación implicada y <span class="k">2–3</span> series de aproximación en el primer
-          ejercicio (50 % · 70 % · 85 % del peso de trabajo, bajando repeticiones). Las aproximaciones
-          no se registran.</p>
+          <p><strong>Calienta antes de cada sesión.</strong> La forma que recomienda el programa es hacer
+          una serie del propio ejercicio con bastante menos peso del que vas a usar después. Por ejemplo,
+          en sentadilla: antes de cargar la barra, haz <span class="k">12-15</span> repeticiones solo con
+          la barra o con un disco de 10 kg por lado. Repítelo en cada ejercicio. Las series de
+          calentamiento no se registran.</p>
+        </div>
+
+        <div class="card">
+          <h3>Calentamiento por grupo</h3>
+          <ul>
+            <li><b>Pecho:</b> flexiones de cualquier tipo, estiramiento dinámico de pectoral.</li>
+            <li><b>Tríceps:</b> flexiones diamante, círculos de brazo hacia atrás.</li>
+            <li><b>Pierna:</b> zancadas sin peso o con poco, comba.</li>
+            <li><b>Bíceps:</b> curl a una mano muy ligero, curl con banda elástica.</li>
+            <li><b>Hombro:</b> rotaciones de hombro, aperturas con banda, toques de hombro.</li>
+            <li><b>Espalda:</b> puente de glúteo, dominadas con agarre ancho.</li>
+            <li><b>Para activar el riego:</b> cinta, escaladora o unos minutos de cardio.</li>
+          </ul>
+          <p style="margin-top:9px">Calentar también reduce las agujetas y baja el riesgo de lesión.</p>
         </div>
 
         <div class="card">
           <h3>Progresión</h3>
           <p>Doble progresión: primero suben las repeticiones, después el peso.</p>
           <ul>
-            <li>Empieza en el extremo bajo del rango con el RIR indicado.</li>
-            <li>Sube repeticiones cada semana hasta llegar al tope del rango en todas las series.</li>
-            <li>Entonces añade <span class="k">2,5 kg</span> arriba o <span class="k">5 kg</span> abajo y vuelve al fondo del rango.</li>
-            <li>En déficit, mantener la carga ya es ganar: si conservas el press banca, el jalón, la prensa y el curl femoral mientras baja el peso corporal, funciona.</li>
-            <li><b>Semana 8:</b> descarga. Mismo peso, la mitad de series, parando a RIR 4.</li>
+            <li>Empieza con un peso con el que llegues a 12 repeticiones con buena técnica.</li>
+            <li>Sube repeticiones cada semana dentro del rango de 12 a 15.</li>
+            <li>Cuando llegues a 15 repeticiones en las cuatro series, sube el peso y vuelve a 12.</li>
+            <li>En déficit, mantener la carga ya es ganar: si conservas el press banca, el remo con barra, la sentadilla y el press de hombro mientras baja el peso corporal, funciona.</li>
+            <li>Cada seis u ocho semanas, una semana suave: mismo peso y la mitad de series.</li>
           </ul>
         </div>
 
         <div class="card">
-          <h3>Qué es el RIR</h3>
-          <p>Repeticiones en reserva: las que <em>podrías</em> haber hecho al terminar la serie.
-          RIR&nbsp;2 es parar con dos en el depósito; RIR&nbsp;0 es fallo técnico. Los básicos pesados
-          van a RIR&nbsp;2 para no acumular fatiga; los aislamientos, cerca del fallo.</p>
+          <h3>Las técnicas del plan</h3>
+          <ul>
+            <li><b>Drop set:</b> terminas las <span class="k">12-15</span> repeticiones, bajas el peso sin
+            descansar y haces <span class="k">12</span> más. Las cuatro series van así.</li>
+            <li><b>Superserie:</b> dos ejercicios encadenados sin descanso entre ellos. Descansas al
+            terminar la pareja.</li>
+            <li><b>Una repetición antes del fallo:</b> paras, descansas <span class="k">20 s</span> y sigues.
+            Aparece en los curls de martillo y de polea.</li>
+            <li><b>Alterna barra y mancuernas</b> por semanas en los días de pecho, como indica cada sesión.</li>
+          </ul>
         </div>
 
         <div class="card">
@@ -480,92 +502,90 @@
 
 /* ---------------------------------------------------------------- plan */
 var PLAN = [
- {id:"d1", dow:1, day:"Lunes", name:"Empuje", focus:"Pecho · Hombro · Tríceps", color:"var(--d1)", mins:60, ex:[
-  {n:"Press banca plano con barra", sets:4, reps:"6–8", rest:150, restL:"2–3 min", rir:"2",
-   note:"Tu levantamiento de referencia. Usa un rack con los topes puestos a la altura del pecho, o pide que te vigilen la última serie."},
-  {n:"Press inclinado con mancuernas", sets:3, reps:"8–10", rest:90, restL:"90 s", rir:"1–2",
-   note:"Banco a 30°: por encima de 45° el trabajo se va al hombro. Baja hasta notar estiramiento en el pectoral y no choques las mancuernas arriba."},
-  {n:"Press militar con mancuernas", sets:3, reps:"8–10", rest:90, restL:"90 s", rir:"2",
-   note:"Sentado con el respaldo casi vertical, glúteo y abdomen apretados para no arquear la lumbar. Sube hasta casi extender el codo, sin chocar las mancuernas arriba."},
-  {n:"Fondos en máquina asistida", sets:3, reps:"8–12", rest:90, restL:"90 s", rir:"1",
-   note:"Inclina el torso ligeramente hacia delante para cargar más pectoral. Reduce la asistencia según ganes fuerza."},
-  {n:"Elevaciones laterales con mancuernas", sets:4, reps:"12–15", rest:45, restL:"45 s", rir:"0–1",
-   note:"El deltoides lateral es lo que ensancha la silueta al bajar la grasa. Codo ligeramente flexionado, sube guiando con el codo y baja despacio, sin impulso de cadera."},
-  {n:"Extensión de tríceps en polea con cuerda", sets:3, reps:"12–15", rest:45, restL:"45 s", rir:"1",
-   note:"Codos pegados al costado; abre la cuerda al final del recorrido."},
-  {n:"Face pull en polea", sets:2, reps:"15–20", rest:45, restL:"45 s", rir:"2",
-   note:"Salud de hombro. Poco peso y mucha calidad: compensa todo el empuje del día."},
+ {id:"d1", dow:1, day:"Lunes", name:"Pecho A", focus:"Pecho plano e inclinado · Tríceps · Abdomen", color:"var(--d1)", wk:"Pecho · Tríceps", mins:70,
+  dayNote:"En los ejercicios planos e inclinados alterna el material: una semana solo barra, la siguiente solo mancuernas.", ex:[
+  {n:"Press banca con barra", sets:4, reps:"12-15",
+   note:"Tumbado con la espalda apoyada en el banco, sube la barra por encima del pecho extendiendo el brazo del todo y con los pies planos en el suelo. Repite."},
+  {n:"Aperturas sentado en polea", sets:4, reps:"12-15", tag:"Drop set",
+   note:"Sentado con las poleas a la altura del hombro, lleva los brazos al frente con el cuerpo quieto, retráelos y repite. En cada serie: 12-15 repeticiones, bajas peso y haces 12 más."},
+  {n:"Press inclinado con mancuernas", sets:4, reps:"12-15",
+   note:"Con el banco a 45°, sentado, sube las mancuernas por encima del pecho, bájalas y repite."},
+  {n:"Patada de tríceps en polea", sets:4, reps:"12-15", perSide:true,
+   note:"Polea a la altura del torso. Rodillas algo flexionadas y bisagra de cadera; con un solo brazo, extiende el tríceps por detrás del cuerpo hasta estirarlo del todo. Vuelve a 90° y repite."},
+  {n:"Press francés", sets:4, reps:"12-15",
+   note:"Tumbado en el banco con barra Z, brazos a 90° por encima de la cabeza y palmas hacia arriba. Baja la barra hasta la altura de la cabeza y vuelve a subir. Repite."},
+  {n:"Extensión de tríceps en polea a una mano", sets:4, reps:"12-15", perSide:true,
+   note:"Polea a la altura de la cara. De pie, hombros retraídos y rodillas algo flexionadas, tira del agarre hasta extender el tríceps del todo y vuelve a 90°. Repite y cambia de brazo."},
+  {n:"Circuito de abdomen", sets:4, reps:"4 ejercicios", tag:"1 min / 30 s",
+   note:"Elevación de piernas, tijeras, crunch oblicuo y plancha lateral. Un minuto de trabajo y 30 segundos de descanso en cada uno, cuatro vueltas. Termina con un minuto de plancha."},
  ]},
- {id:"d2", dow:2, day:"Martes", name:"Tirón", focus:"Espalda · Bíceps", color:"var(--d2)", mins:60, ex:[
-  {n:"Jalón al pecho en polea", sets:4, reps:"6–8", rest:150, restL:"2–3 min", rir:"2",
-   note:"Sustituye a las dominadas. Lleva la barra a la clavícula, no al cuello, y evita balancear el torso."},
-  {n:"Remo en máquina con pecho apoyado", sets:4, reps:"8–10", rest:120, restL:"2 min", rir:"2",
-   note:"El pecho apoyado quita la espalda baja de la ecuación: todo el trabajo va al dorsal y al trapecio medio."},
-  {n:"Remo en polea baja, agarre neutro", sets:3, reps:"10–12", rest:90, restL:"90 s", rir:"1",
-   note:"Pausa de un segundo con las escápulas juntas en cada repetición."},
-  {n:"Pullover en polea alta", sets:2, reps:"12–15", rest:60, restL:"60 s", rir:"1",
-   note:"Aísla el dorsal sin que el bíceps se lleve el trabajo. Brazos casi rectos: el movimiento sale del hombro."},
-  {n:"Curl de bíceps en máquina", sets:3, reps:"8–10", rest:60, restL:"60 s", rir:"1",
-   note:"El brazo apoyado impide que ayudes con la cadera, que es el fallo típico del curl de pie."},
-  {n:"Curl martillo en polea con cuerda", sets:2, reps:"12–15", rest:45, restL:"45 s", rir:"0–1",
-   note:"Añade grosor al braquial, que es lo que llena el brazo visto de perfil."},
-  {n:"Deltoides posterior en máquina", sets:3, reps:"15–20", rest:45, restL:"45 s", rir:"0–1",
-   note:"Poco glamuroso, pero es la diferencia entre un hombro plano y uno redondo."},
-  {n:"Encogimientos con mancuernas", sets:3, reps:"12–15", rest:60, restL:"60 s", rir:"0–1",
-   note:"Brazos colgando a los lados y mancuerna pesada. Sube los hombros hacia las orejas, aprieta un segundo arriba y baja controlando. Sin rotarlos: el recorrido es recto."},
+ {id:"d2", dow:2, day:"Martes", name:"Espalda", focus:"Espalda · Bíceps", color:"var(--d2)", wk:"Espalda · Bíceps", mins:60, ex:[
+  {n:"Jalón al pecho", sets:4, reps:"12-15", tag:"Superserie",
+   note:"Jalón: sentado a 75°, baja la barra hasta el pecho y sube apretando la espalda. Encadenado, jalón inverso: mismo ángulo con las palmas hacia ti, baja al pecho y deja que los brazos se extiendan del todo arriba."},
+  {n:"Remo con barra", sets:4, reps:"12-15",
+   note:"Inclinado ligeramente por la cadera y con los pies a la anchura de los hombros, lleva la barra justo por debajo del pecho apretando la espalda. Retrae y repite."},
+  {n:"Curl con mancuernas", sets:4, reps:"12-15", tag:"Drop set",
+   note:"De pie con los pies a la anchura de los hombros, sube las mancuernas del muslo al pecho y bájalas del todo. En cada serie: 12-15 repeticiones, bajas peso y haces 12 más."},
+  {n:"Curl 15 con barra Z", sets:4, reps:"15",
+   note:"Del muslo al pecho: 5 repeticiones completas, 5 solo la mitad de abajo y 5 solo la mitad de arriba."},
+  {n:"Curl predicador", sets:4, reps:"12-15",
+   note:"Banco inclinado justo por debajo de 90°. De pie detrás del banco, apoya el brazo y mantén el codo pegado arriba del respaldo todo el recorrido. Curl y repite."},
+  {n:"Curl martillo", sets:4, reps:"12-15",
+   note:"Mancuernas a los lados con las cabezas del peso mirando arriba y abajo. Sube del todo y baja. Para una repetición antes del fallo, descansa 20 segundos y sigue."},
  ]},
- {id:"d3", dow:3, day:"Miércoles", name:"Pierna A", focus:"Cuádriceps dominante", color:"var(--d3)", mins:50, ex:[
-  {n:"Prensa 45°", sets:4, reps:"10–12", rest:150, restL:"2–3 min", rir:"2",
-   note:"El básico del día. Pies a la anchura de los hombros y algo bajos en la plataforma para cargar el cuádriceps, sin despegar la lumbar del respaldo."},
-  {n:"Extensión de cuádriceps", sets:4, reps:"12–15", rest:90, restL:"90 s", rir:"1",
-   note:"Ajusta el respaldo para que la rodilla quede alineada con el eje de giro. Pausa arriba de un segundo y última serie al fallo."},
-  {n:"Curl femoral sentado", sets:3, reps:"12–15", rest:90, restL:"90 s", rir:"1",
-   note:"Aunque el día sea de cuádriceps, el isquio necesita su dosis para equilibrar la rodilla."},
-  {n:"Gemelo en máquina de pie", sets:4, reps:"12–15", rest:45, restL:"45 s", rir:"0–1",
-   note:"Rodilla estirada y recorrido completo: estiramiento abajo, pausa arriba. Nada de rebotes."},
-  {n:"Crunch en polea alta", sets:3, reps:"12–15", rest:45, restL:"45 s", rir:"1",
-   note:"De rodillas frente a la polea, flexiona la columna llevando los codos hacia los muslos."},
+ {id:"d3", dow:3, day:"Miércoles", name:"Hombro", focus:"Hombros · Abdomen", color:"var(--d3)", wk:"Hombros · Abdomen", mins:60, ex:[
+  {n:"Press de hombro sentado con mancuernas", sets:4, reps:"12-15",
+   note:"Sentado a 90° con las mancuernas por encima de los hombros, súbelas hasta arriba de la cabeza, bájalas a los hombros y repite."},
+  {n:"Elevación lateral en polea a una mano", sets:4, reps:"12-15", perSide:true,
+   note:"Polea en el enganche más bajo. Con el agarre de estribo, eleva el brazo lateralmente hasta la altura del hombro con una ligera flexión de codo. Vuelve al costado y repite."},
+  {n:"Elevación lateral de pie con mancuernas", sets:4, reps:"12-15", tag:"Drop set",
+   note:"Brazos flexionados a 90°, de pie a la anchura de los hombros. Sube los pesos hasta la altura del hombro y retrae. En cada serie: 12-15 repeticiones, bajas peso y haces 12 más."},
+  {n:"Encogimientos de hombro", sets:4, reps:"12-15",
+   note:"Con las mancuernas a los lados y los brazos rectos, encoge los hombros aguantando arriba uno o dos segundos. Vuelve al inicio y repite."},
+  {n:"Press Arnold", sets:4, reps:"12-15",
+   note:"Sentado en el banco, sube las mancuernas desde la posición final de un curl rotando hasta que las palmas miren al frente y los brazos queden extendidos arriba. Baja imitando el mismo movimiento."},
+  {n:"Circuito de abdomen", sets:4, reps:"6 ejercicios", tag:"1 min / 30 s",
+   note:"Crunch bicicleta, abdominales completos, giros, tocar los pies, plancha y plancha lateral. Un minuto de trabajo y 30 segundos de descanso en cada uno, cuatro vueltas."},
  ]},
- {id:"d4", dow:4, day:"Jueves", name:"Torso", focus:"Volumen y puntos débiles", color:"var(--d4)", mins:60, ex:[
-  {n:"Press militar con mancuernas", sets:4, reps:"6–8", rest:120, restL:"2 min", rir:"2",
-   note:"Segunda dosis semanal de hombro, con más carga y menos repeticiones que el lunes. Sube las mancuernas a la posición ayudándote con las rodillas antes de empezar la serie."},
-  {n:"Remo en máquina a una mano", sets:3, reps:"10–12", perSide:true, rest:90, restL:"90 s", rir:"1",
-   note:"Recorrido largo, tirando con el codo hacia la cadera. Sin girar el torso para ganar centímetros."},
-  {n:"Press inclinado con mancuernas", sets:3, reps:"10–12", rest:90, restL:"90 s", rir:"1",
-   note:"Segunda dosis de pecho de la semana, con más repeticiones y menos carga que el lunes."},
-  {n:"Jalón al pecho, agarre supino", sets:3, reps:"10–12", rest:75, restL:"75 s", rir:"1",
-   note:"El agarre supino carga más el dorsal bajo y el bíceps."},
-  {n:"Aperturas en máquina (contractor)", sets:3, reps:"12–15", rest:60, restL:"60 s", rir:"0–1",
-   note:"Trabajo de estiramiento para el pectoral sin fatiga articular."},
-  {n:"Elevaciones laterales en polea", sets:3, reps:"15–20", perSide:true, rest:45, restL:"45 s", rir:"0",
-   note:"La polea mantiene tensión en la parte baja del recorrido, que es justo donde la mancuerna descansa."},
-  {n:"Curl de bíceps en polea", sets:2, reps:"12–15", rest:60, restL:"60 s", rir:"0–1",
-   note:"Segunda dosis de bíceps de la semana, en serie normal y con su descanso completo."},
-  {n:"Extensión de tríceps en máquina", sets:2, reps:"12–15", rest:60, restL:"60 s", rir:"0–1",
-   note:"Cierra el día con el tríceps. Codos quietos y recorrido completo."},
+ {id:"d4", dow:4, day:"Jueves", name:"Pierna", focus:"Pierna · Bíceps", color:"var(--d4)", wk:"Pierna · Bíceps", mins:70, ex:[
+  {n:"Sentadilla con barra", sets:4, reps:"12-15", tag:"Alterna semanal",
+   note:"Alterna por semanas entre trasera y frontal. Trasera: barra en la espalda. Frontal: barra apoyada delante, justo por debajo de la clavícula. En las dos, pies pegados al suelo a la anchura de los hombros, columna neutra, flexiona solo las rodillas y baja todo lo que puedas."},
+  {n:"Extensión de cuádriceps", sets:4, reps:"12-15",
+   note:"Sentado en la máquina, extiende las rodillas del todo desde los 90° de inicio, vuelve abajo y repite."},
+  {n:"Prensa de pierna", sets:4, reps:"12-15",
+   note:"Sentado en la máquina, extiende las piernas parando justo antes de bloquearlas del todo. Vuelve abajo y repite."},
+  {n:"Curl femoral tumbado", sets:4, reps:"12-15",
+   note:"Tumbado boca abajo en la máquina, con el rodillo sobre los gemelos, lleva el peso hacia el glúteo. Retrae y repite."},
+  {n:"Curl inclinado sentado", sets:4, reps:"12-15", tag:"Drop set",
+   note:"Con el banco inclinado, recuéstate y sube las mancuernas hacia las axilas en curl. En cada serie: 12-15 repeticiones, bajas peso y haces 12 más."},
+  {n:"Curl en polea", sets:4, reps:"12-15",
+   note:"Polea en el enganche más bajo. Sube el agarre hasta la parte alta del pecho y baja del todo. Para una repetición antes del fallo, descansa 20 segundos y repite hasta completar las 4 series."},
+  {n:"Curl martillo", sets:4, reps:"12-15",
+   note:"Mancuernas a los lados con las cabezas del peso mirando arriba y abajo. Sube del todo y baja. Para una repetición antes del fallo, descansa 20 segundos y sigue."},
  ]},
- {id:"d5", dow:5, day:"Viernes", name:"Pierna B", focus:"Isquios · Gemelo · Core", color:"var(--d5)", mins:50, ex:[
-  {n:"Curl femoral tumbado", sets:4, reps:"8–10", rest:120, restL:"2 min", rir:"2",
-   note:"El principal del día. Cadera pegada al banco y control en la bajada: el isquio crece con la fase negativa."},
-  {n:"Prensa 45° con pies altos", sets:3, reps:"10–12", rest:120, restL:"2 min", rir:"1–2",
-   note:"Misma máquina que el miércoles, pero con los pies altos en la plataforma para llevar el trabajo al isquio."},
-  {n:"Extensión de cuádriceps", sets:3, reps:"12–15", rest:60, restL:"60 s", rir:"0–1",
-   note:"Segunda dosis de cuádriceps de la semana, esta vez con más repeticiones y menos carga."},
-  {n:"Curl femoral sentado", sets:3, reps:"12–15", rest:60, restL:"60 s", rir:"0–1",
-   note:"Sentado, el isquio trabaja más estirado, que es donde más crece."},
-  {n:"Gemelo en máquina de pie", sets:3, reps:"12–15", rest:45, restL:"45 s", rir:"0–1",
-   note:"Igual que el miércoles. La pantorrilla aguanta bien dos sesiones por semana."},
-  {n:"Crunch en máquina abdominal", sets:3, reps:"12–15", rest:45, restL:"45 s", rir:"1",
-   note:"Controla la vuelta: es donde está el trabajo."},
+ {id:"d5", dow:5, day:"Viernes", name:"Pecho B", focus:"Pecho plano y declinado · Tríceps · Abdomen", color:"var(--d5)", wk:"Pecho · Tríceps", mins:70,
+  dayNote:"Alterna barra y mancuernas por semanas solo en los ejercicios planos. En los declinados usa siempre barra.", ex:[
+  {n:"Press banca plano con mancuernas", sets:4, reps:"12-15",
+   note:"Tumbado con la espalda apoyada en el banco, sube las mancuernas por encima del pecho extendiendo el brazo del todo y con los pies planos en el suelo."},
+  {n:"Press banca declinado con barra", sets:4, reps:"12-15",
+   note:"Con el banco en declinado, saca la barra del soporte y empuja por encima del pecho. Repite."},
+  {n:"Contractor de pecho", sets:4, reps:"12-15", tag:"Drop set",
+   note:"Sentado con la espalda apoyada y los pies planos, cierra los agarres al frente apretando el pecho, como si los codos fueran a tocarse. No dejes que los brazos vuelvan del todo al tope de la máquina, para no castigar el hombro. En cada serie: 12-15 repeticiones, bajas peso y haces 12 más."},
+  {n:"Extensión de tríceps en polea con barra recta", sets:4, reps:"12-15",
+   note:"Polea por encima de la cabeza con barra recta. Hombros retraídos, rodillas algo flexionadas, baja la barra hasta extender los brazos del todo y deja que suban hasta 90°."},
+  {n:"Press francés", sets:4, reps:"12-15",
+   note:"Tumbado en el banco con barra Z, brazos a 90° por encima de la cabeza y palmas hacia arriba. Baja la barra hasta la altura de la cabeza y vuelve a subir."},
+  {n:"Fondos con apoyo en banco", sets:4, reps:"12-15",
+   note:"Palmas en el banco con la espalda de cara al mismo, piernas estiradas. Baja flexionando solo los codos, sube y repite."},
+  {n:"Circuito de abdomen en banco", sets:4, reps:"3 ejercicios", tag:"1 min / 30 s",
+   note:"In and outs, around the world y tijeras, sentado en el banco. Un minuto de trabajo y 30 segundos de descanso en cada uno, cuatro vueltas."},
  ]},
 ];
 
 var REST_DAYS = {
-  6:{day:"Sábado", title:"Descanso activo", txt:"Camina, muévete y haz tu sesión de LISS más larga: 40 min a ritmo cómodo. Si vas a meter HIIT esta semana, hoy es el mejor hueco."},
-  0:{day:"Domingo", title:"Descanso", txt:"Come bien, duerme y deja la semana preparada. Mañana toca empuje."}
+  6:{day:"Sábado", title:"Descanso activo", wk:"Cardio suave", txt:"Camina, muévete y haz algo de cardio suave si te apetece. Nada de pesas."},
+  0:{day:"Domingo", title:"Descanso", wk:"—", txt:"Come bien, duerme y deja la semana preparada. Mañana toca pecho."}
 };
-
-var CARDIO = {1:"—", 2:"LISS 25 min", 3:"—", 4:"LISS 30 min", 5:"—", 6:"LISS 40 min", 0:"—"};
 
 /* ---------------------------------------------------------------- state */
 var LS = "bloque-corte-v1";
@@ -714,7 +734,7 @@ function renderHoy(){
       '<div class="card hero" style="--plate:var(--d0)">'+
         '<div class="row"><span class="plate">·</span><div>'+
         '<h2>'+esc(rest.title)+'</h2>'+
-        '<p class="sub">Cardio de hoy: '+esc(CARDIO[dow])+'</p></div></div>'+
+        '<p class="sub">Sin pesas</p></div></div>'+
         '<p style="margin:13px 0 0;font-size:.9rem;color:var(--ink-2)">'+esc(rest.txt)+'</p>'+
       '</div>'+
       '<p class="eyebrow" style="margin-top:20px">Entrenar de todas formas</p>'+
@@ -736,6 +756,7 @@ function renderHoy(){
       '<div class="row"><span class="plate">'+(PLAN.indexOf(d)+1)+'</span><div>'+
       '<h2>'+esc(d.name)+'</h2>'+
       '<p class="sub">'+esc(d.focus)+' · ~'+d.mins+' min</p></div></div>'+
+      (d.dayNote ? '<p class="daynote">'+esc(d.dayNote)+'</p>' : '')+
       '<div class="meter"><span class="bar"><i style="width:'+pct+'%"></i></span>'+
       '<span class="val">'+done+'/'+total+' series</span></div>'+
     '</div>';
@@ -750,7 +771,8 @@ function renderHoy(){
         '<span class="ex-idx">'+(i+1)+'</span>'+
         '<span class="ex-name">'+esc(e.n)+'</span>'+
         '<span class="ex-cnt"><span class="cnt-v">'+dn+'/'+e.sets+'</span><span class="chev"></span></span>'+
-        '<span class="ex-tgt">'+e.sets+'×'+esc(e.reps)+(e.perSide?" /lado":"")+' · '+esc(e.restL)+' · RIR '+esc(e.rir)+'</span>'+
+        '<span class="ex-tgt">'+e.sets+'×'+esc(e.reps)+(e.perSide?" /lado":"")+
+          (e.tag ? ' · '+esc(e.tag) : '')+'</span>'+
       '</button>'+
       '<div class="ex-body"></div>'+
     '</div>';
@@ -778,7 +800,8 @@ function exBodyHTML(d, e, i){
   var lastHTML = last
     ? '<p class="last">Última vez · <b>'+esc(last.kg || "—")+' kg × '+esc(last.reps || "—")+'</b> · '+esc(fmtDate(last.date))+'</p>'
     : '<p class="last">Sin registro previo. Anota la primera serie para tener referencia.</p>';
-  var repsLow = String(e.reps).split("–")[0];
+  var m = String(e.reps).match(/\d+/);
+  var repsLow = m ? m[0] : "";
   var sets = arr.map(function(s, j){
     return '<div class="set'+(s.done?" done":"")+'" data-set="'+j+'">'+
       '<span class="set-n">'+(j+1)+'</span>'+
@@ -830,8 +853,9 @@ function renderWeek(){
     var color = p ? p.color : "var(--d0)";
     var name = p ? p.day : REST_DAYS[dw].day;
     var label = p ? p.name : REST_DAYS[dw].title;
+    var foco = p ? p.wk : REST_DAYS[dw].wk;
     return '<tr style="--pc:'+color+'"><td class="dc"><span class="sq"></span>'+esc(name)+'</td>'+
-      '<td>'+esc(label)+'</td><td class="dim">'+esc(CARDIO[dw])+'</td></tr>';
+      '<td>'+esc(label)+'</td><td class="dim">'+esc(foco)+'</td></tr>';
   }).join("");
 }
 
