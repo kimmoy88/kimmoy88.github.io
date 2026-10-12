@@ -1005,11 +1005,16 @@ document.addEventListener("visibilitychange", function(){
 });
 
 /* ---------------------------------------------------------------- boot */
+/* La version va en la cabecera, a la vista en todas las pantallas: asi se
+   distingue de un vistazo esta copia de otra guardada en el movil. */
+var VERSION = "v4";
 (function(){
   var ej = PLAN.reduce(function(a,d){ return a + d.ex.length; }, 0);
   var se = PLAN.reduce(function(a,d){ return a + d.ex.reduce(function(x,e){ return x + e.sets; },0); }, 0);
   document.getElementById("ver").textContent =
-    "Versión del 12 oct 2026 · " + PLAN.length + " sesiones · " + ej + " ejercicios · " + se + " series.";
+    "Versión " + VERSION + ", del 12 oct 2026 · " + PLAN.length + " sesiones · " + ej +
+    " ejercicios · " + se + " series. Sin circuitos de abdomen.";
+  document.getElementById("syncTxt").textContent = VERSION + " · " + ej + " ej";
 })();
 
 loadLocal();
@@ -1019,7 +1024,7 @@ bindPlan();
 renderWeek();
 
 /* Version sin conexion: los datos viven solo en este dispositivo. */
-setSync("local", "Este móvil");
+document.getElementById("sync").dataset.s = "local";
 })();
 </script>
 </body>
