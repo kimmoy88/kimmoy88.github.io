@@ -237,7 +237,7 @@
   }
   .cta.ghost{background:none;color:var(--ink-2);border:1px solid var(--line)}
 
-  .picker{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:12px}
+  .picker{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}
   .picker button{
     background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:9px 2px;
     cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;
@@ -580,11 +580,25 @@ var PLAN = [
   {n:"Circuito de abdomen en banco", sets:4, reps:"3 ejercicios", tag:"1 min / 30 s",
    note:"In and outs, around the world y tijeras, sentado en el banco. Un minuto de trabajo y 30 segundos de descanso en cada uno, cuatro vueltas."},
  ]},
+ {id:"d7", dow:0, day:"Domingo", name:"Espalda 2", focus:"Espalda · Bíceps", color:"var(--d2)", wk:"Espalda · Bíceps", mins:60,
+  dayNote:"Es la misma sesión del martes: el día siete del programa repite espalda y bíceps.", ex:[
+  {n:"Jalón al pecho", sets:4, reps:"12-15", tag:"Superserie",
+   note:"Jalón: sentado a 75°, baja la barra hasta el pecho y sube apretando la espalda. Encadenado, jalón inverso: mismo ángulo con las palmas hacia ti, baja al pecho y deja que los brazos se extiendan del todo arriba."},
+  {n:"Remo con barra", sets:4, reps:"12-15",
+   note:"Inclinado ligeramente por la cadera y con los pies a la anchura de los hombros, lleva la barra justo por debajo del pecho apretando la espalda. Retrae y repite."},
+  {n:"Curl con mancuernas", sets:4, reps:"12-15", tag:"Drop set",
+   note:"De pie con los pies a la anchura de los hombros, sube las mancuernas del muslo al pecho y bájalas del todo. En cada serie: 12-15 repeticiones, bajas peso y haces 12 más."},
+  {n:"Curl 15 con barra Z", sets:4, reps:"15",
+   note:"Del muslo al pecho: 5 repeticiones completas, 5 solo la mitad de abajo y 5 solo la mitad de arriba."},
+  {n:"Curl predicador", sets:4, reps:"12-15",
+   note:"Banco inclinado justo por debajo de 90°. De pie detrás del banco, apoya el brazo y mantén el codo pegado arriba del respaldo todo el recorrido. Curl y repite."},
+  {n:"Curl martillo", sets:4, reps:"12-15",
+   note:"Mancuernas a los lados con las cabezas del peso mirando arriba y abajo. Sube del todo y baja. Para una repetición antes del fallo, descansa 20 segundos y sigue."},
+ ]},
 ];
 
 var REST_DAYS = {
-  6:{day:"Sábado", title:"Descanso activo", wk:"Cardio suave", txt:"Camina, muévete y haz algo de cardio suave si te apetece. Nada de pesas."},
-  0:{day:"Domingo", title:"Descanso", wk:"—", txt:"Come bien, duerme y deja la semana preparada. Mañana toca pecho."}
+  6:{day:"Sábado", title:"Descanso activo", wk:"Cardio suave", txt:"El único día sin pesas. Camina, muévete y haz algo de cardio suave si te apetece."}
 };
 
 /* ---------------------------------------------------------------- state */
