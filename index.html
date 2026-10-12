@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0E1113" media="(prefers-color-scheme: dark)">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Rutina">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -992,7 +992,7 @@ document.addEventListener("visibilitychange", function(){
 /* ---------------------------------------------------------------- boot */
 /* La version va en la cabecera, a la vista en todas las pantallas: asi se
    distingue de un vistazo esta copia de otra guardada en el movil. */
-var VERSION = "v4";
+var VERSION = "v5";
 (function(){
   var ej = PLAN.reduce(function(a,d){ return a + d.ex.length; }, 0);
   var se = PLAN.reduce(function(a,d){ return a + d.ex.reduce(function(x,e){ return x + e.sets; },0); }, 0);
