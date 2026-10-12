@@ -90,7 +90,7 @@
 
   .topbar{
     flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;
-    padding:calc(12px + env(safe-area-inset-top)) 18px 12px;
+    padding:calc(34px + env(safe-area-inset-top)) 18px 14px;
     background:var(--surface);border-bottom:1px solid var(--line);
   }
   .mark{display:flex;align-items:center;gap:10px;min-width:0}
@@ -996,7 +996,7 @@ document.addEventListener("visibilitychange", function(){
 /* ---------------------------------------------------------------- boot */
 /* La version va en la cabecera, a la vista en todas las pantallas: asi se
    distingue de un vistazo esta copia de otra guardada en el movil. */
-var VERSION = "v6";
+var VERSION = "v7";
 (function(){
   var ej = PLAN.reduce(function(a,d){ return a + d.ex.length; }, 0);
   var se = PLAN.reduce(function(a,d){ return a + d.ex.reduce(function(x,e){ return x + e.sets; },0); }, 0);
