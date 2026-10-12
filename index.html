@@ -88,13 +88,9 @@
   }
   @media (max-width:540px){ .app{border:0} }
 
-  .topbar{
-    flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;
-    padding:calc(34px + env(safe-area-inset-top)) 18px 14px;
-    background:var(--surface);border-bottom:1px solid var(--line);
-  }
-  .mark{display:flex;align-items:center;gap:10px;min-width:0}
-  .logo{width:30px;height:30px;flex:none;display:block}
+  /* Solo separación: aparta el contenido de la franja que el sistema
+     difumina en la parte alta de la pantalla. */
+  .topbar{flex:none;height:calc(44px + env(safe-area-inset-top));background:var(--bg)}
   .brand .name{font-size:1.25rem;font-weight:700;text-transform:uppercase;letter-spacing:.01em;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
@@ -282,15 +278,7 @@
 
 <div class="app">
 
-  <div class="topbar">
-    <div class="mark">
-      <svg class="logo" viewBox="0 0 32 32" role="img" aria-label="Bloque de corte">
-        <rect x="0" y="13.4" width="32" height="5.2" rx="2.6" fill="var(--ink-3)"/>
-        <circle cx="16" cy="16" r="12" fill="var(--accent)"/>
-        <circle cx="16" cy="16" r="4.1" fill="var(--surface)"/>
-      </svg>
-    </div>
-  </div>
+  <div class="topbar" aria-hidden="true"></div>
 
   <div class="screens" id="screens">
 
@@ -992,7 +980,7 @@ document.addEventListener("visibilitychange", function(){
 /* ---------------------------------------------------------------- boot */
 /* La version va en la cabecera, a la vista en todas las pantallas: asi se
    distingue de un vistazo esta copia de otra guardada en el movil. */
-var VERSION = "v8";
+var VERSION = "v9";
 (function(){
   var ej = PLAN.reduce(function(a,d){ return a + d.ex.length; }, 0);
   var se = PLAN.reduce(function(a,d){ return a + d.ex.reduce(function(x,e){ return x + e.sets; },0); }, 0);
