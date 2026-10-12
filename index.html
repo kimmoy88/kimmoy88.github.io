@@ -96,22 +96,8 @@
   .mark{display:flex;align-items:center;gap:10px;min-width:0}
   .logo{width:30px;height:30px;flex:none;display:block}
   .brand{display:flex;flex-direction:column;line-height:1.15}
-  .brand .kicker{
-    font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);
-    font-family:var(--f-mono);font-weight:600;
-  }
-  .brand .name{font-size:1.12rem;font-weight:700;text-transform:uppercase;letter-spacing:.01em;
+  .brand .name{font-size:1.25rem;font-weight:700;text-transform:uppercase;letter-spacing:.01em;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .sync{
-    display:flex;align-items:center;gap:6px;font-size:.66rem;letter-spacing:.08em;
-    text-transform:uppercase;color:var(--ink-3);font-family:var(--f-mono);
-    border:1px solid var(--line);border-radius:999px;padding:4px 8px;background:var(--surface-2);
-    text-align:right;white-space:nowrap;flex:none;font-size:.6rem;
-  }
-  .sync .led{width:7px;height:7px;border-radius:50%;background:var(--ink-3);flex:none}
-  .sync[data-s="ok"] .led{background:var(--good)}
-  .sync[data-s="busy"] .led{background:var(--d3)}
-  .sync[data-s="local"] .led{background:var(--ink-3)}
 
   .screens{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
   .screen{display:none;padding:18px 16px 32px}
@@ -305,11 +291,9 @@
         <circle cx="16" cy="16" r="4.1" fill="var(--surface)"/>
       </svg>
       <div class="brand">
-        <span class="kicker">Semana de 5 días</span>
         <span class="name">Bloque de corte</span>
       </div>
     </div>
-    <div class="sync" id="sync" data-s="local"><span class="led"></span><span id="syncTxt">Local</span></div>
   </div>
 
   <div class="screens" id="screens">
@@ -619,7 +603,8 @@ function saveLocal(){
   try{ localStorage.setItem(LS, JSON.stringify(state)); }catch(e){}
 }
 function setSync(s, txt){
-  var el = document.getElementById("sync");
+  var el = document.getElementById("sync");      /* ya no está en la cabecera */
+  if (!el) return;
   el.dataset.s = s;
   document.getElementById("syncTxt").textContent = txt;
 }
@@ -1014,7 +999,6 @@ var VERSION = "v4";
   document.getElementById("ver").textContent =
     "Versión " + VERSION + ", del 12 oct 2026 · " + PLAN.length + " sesiones · " + ej +
     " ejercicios · " + se + " series. Sin circuitos de abdomen.";
-  document.getElementById("syncTxt").textContent = VERSION + " · " + ej + " ej";
 })();
 
 loadLocal();
@@ -1024,7 +1008,7 @@ bindPlan();
 renderWeek();
 
 /* Version sin conexion: los datos viven solo en este dispositivo. */
-document.getElementById("sync").dataset.s = "local";
+/* la version se consulta en la pestaña Guía */
 })();
 </script>
 </body>
