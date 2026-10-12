@@ -505,7 +505,7 @@
 
 /* ---------------------------------------------------------------- plan */
 var PLAN = [
- {id:"d1", dow:1, day:"Lunes", name:"Pecho A", focus:"Pecho plano e inclinado · Tríceps · Abdomen", color:"var(--d1)", wk:"Pecho · Tríceps", mins:70,
+ {id:"d1", dow:1, day:"Lunes", name:"Pecho A", focus:"Pecho plano e inclinado · Tríceps", color:"var(--d1)", wk:"Pecho · Tríceps", mins:60,
   dayNote:"En los ejercicios planos e inclinados alterna el material: una semana solo barra, la siguiente solo mancuernas.", ex:[
   {n:"Press banca con barra", sets:4, reps:"12-15",
    note:"Tumbado con la espalda apoyada en el banco, sube la barra por encima del pecho extendiendo el brazo del todo y con los pies planos en el suelo. Repite."},
@@ -519,8 +519,6 @@ var PLAN = [
    note:"Tumbado en el banco con barra Z, brazos a 90° por encima de la cabeza y palmas hacia arriba. Baja la barra hasta la altura de la cabeza y vuelve a subir. Repite."},
   {n:"Extensión de tríceps en polea a una mano", sets:4, reps:"12-15", perSide:true,
    note:"Polea a la altura de la cara. De pie, hombros retraídos y rodillas algo flexionadas, tira del agarre hasta extender el tríceps del todo y vuelve a 90°. Repite y cambia de brazo."},
-  {n:"Circuito de abdomen", sets:4, reps:"4 ejercicios", tag:"1 min / 30 s",
-   note:"Elevación de piernas, tijeras, crunch oblicuo y plancha lateral. Un minuto de trabajo y 30 segundos de descanso en cada uno, cuatro vueltas. Termina con un minuto de plancha."},
  ]},
  {id:"d2", dow:2, day:"Martes", name:"Espalda", focus:"Espalda · Bíceps", color:"var(--d2)", wk:"Espalda · Bíceps", mins:60, ex:[
   {n:"Jalón al pecho", sets:4, reps:"12-15", tag:"Superserie",
@@ -536,7 +534,7 @@ var PLAN = [
   {n:"Curl martillo", sets:4, reps:"12-15",
    note:"Mancuernas a los lados con las cabezas del peso mirando arriba y abajo. Sube del todo y baja. Para una repetición antes del fallo, descansa 20 segundos y sigue."},
  ]},
- {id:"d3", dow:3, day:"Miércoles", name:"Hombro", focus:"Hombros · Abdomen", color:"var(--d3)", wk:"Hombros · Abdomen", mins:60, ex:[
+ {id:"d3", dow:3, day:"Miércoles", name:"Hombro", focus:"Hombros", color:"var(--d3)", wk:"Hombros", mins:50, ex:[
   {n:"Press de hombro sentado con mancuernas", sets:4, reps:"12-15",
    note:"Sentado a 90° con las mancuernas por encima de los hombros, súbelas hasta arriba de la cabeza, bájalas a los hombros y repite."},
   {n:"Elevación lateral en polea a una mano", sets:4, reps:"12-15", perSide:true,
@@ -547,8 +545,6 @@ var PLAN = [
    note:"Con las mancuernas a los lados y los brazos rectos, encoge los hombros aguantando arriba uno o dos segundos. Vuelve al inicio y repite."},
   {n:"Press Arnold", sets:4, reps:"12-15",
    note:"Sentado en el banco, sube las mancuernas desde la posición final de un curl rotando hasta que las palmas miren al frente y los brazos queden extendidos arriba. Baja imitando el mismo movimiento."},
-  {n:"Circuito de abdomen", sets:4, reps:"6 ejercicios", tag:"1 min / 30 s",
-   note:"Crunch bicicleta, abdominales completos, giros, tocar los pies, plancha y plancha lateral. Un minuto de trabajo y 30 segundos de descanso en cada uno, cuatro vueltas."},
  ]},
  {id:"d4", dow:4, day:"Jueves", name:"Pierna", focus:"Pierna · Bíceps", color:"var(--d4)", wk:"Pierna · Bíceps", mins:70, ex:[
   {n:"Sentadilla con barra", sets:4, reps:"12-15", tag:"Alterna semanal",
@@ -566,7 +562,7 @@ var PLAN = [
   {n:"Curl martillo", sets:4, reps:"12-15",
    note:"Mancuernas a los lados con las cabezas del peso mirando arriba y abajo. Sube del todo y baja. Para una repetición antes del fallo, descansa 20 segundos y sigue."},
  ]},
- {id:"d5", dow:5, day:"Viernes", name:"Pecho B", focus:"Pecho plano y declinado · Tríceps · Abdomen", color:"var(--d5)", wk:"Pecho · Tríceps", mins:70,
+ {id:"d5", dow:5, day:"Viernes", name:"Pecho B", focus:"Pecho plano y declinado · Tríceps", color:"var(--d5)", wk:"Pecho · Tríceps", mins:60,
   dayNote:"Alterna barra y mancuernas por semanas solo en los ejercicios planos. En los declinados usa siempre barra.", ex:[
   {n:"Press banca plano con mancuernas", sets:4, reps:"12-15",
    note:"Tumbado con la espalda apoyada en el banco, sube las mancuernas por encima del pecho extendiendo el brazo del todo y con los pies planos en el suelo."},
@@ -580,8 +576,6 @@ var PLAN = [
    note:"Tumbado en el banco con barra Z, brazos a 90° por encima de la cabeza y palmas hacia arriba. Baja la barra hasta la altura de la cabeza y vuelve a subir."},
   {n:"Fondos con apoyo en banco", sets:4, reps:"12-15",
    note:"Palmas en el banco con la espalda de cara al mismo, piernas estiradas. Baja flexionando solo los codos, sube y repite."},
-  {n:"Circuito de abdomen en banco", sets:4, reps:"3 ejercicios", tag:"1 min / 30 s",
-   note:"In and outs, around the world y tijeras, sentado en el banco. Un minuto de trabajo y 30 segundos de descanso en cada uno, cuatro vueltas."},
  ]},
  {id:"d7", dow:0, day:"Domingo", name:"Espalda 2", focus:"Espalda · Bíceps", color:"var(--d2)", wk:"Espalda · Bíceps", mins:60,
   dayNote:"Es la misma sesión del martes: el día siete del programa repite espalda y bíceps.", ex:[
