@@ -1,7 +1,7 @@
 {
-  "name": "Bloque de Corte",
-  "short_name": "Rutina",
-  "description": "Rutina de definición de 5 días.",
+  "name": "Arnold Split",
+  "short_name": "Arnold",
+  "description": "Rutina Arnold Split de 6 días.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
