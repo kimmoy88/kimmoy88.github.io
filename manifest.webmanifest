@@ -1,7 +1,7 @@
 {
-  "name": "Arnold Split",
-  "short_name": "Arnold",
-  "description": "Rutina Arnold Split de 6 días.",
+  "name": "Bloque de Corte",
+  "short_name": "Rutina",
+  "description": "Rutina de gimnasio de 6 sesiones por semana.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
