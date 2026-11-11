@@ -1,7 +1,7 @@
 {
   "name": "Bloque de Corte",
   "short_name": "Rutina",
-  "description": "Rutina de gimnasio de 6 sesiones por semana.",
+  "description": "Rutina de definición de 5 días.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
