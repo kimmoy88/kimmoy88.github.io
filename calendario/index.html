@@ -1,0 +1,999 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Calendario editable de evaluaciones: fechas, pesos y notas de cada materia.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#F4F5F8">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#10141C">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Evaluaciones">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Calendario de evaluaciones</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Agenda académica: el mes en rejilla manda y al lado van las próximas fechas; en teléfono, una sola columna. */
+:root {
+  --bg: #F4F5F8; --surface: #FFFFFF; --cell: #ECEEF3; --ink: #1B2437; --muted: #5A6477; --line: #D9DDE6;
+  --accent: #1F2A44; --on-accent: #FFFFFF; --hoy: #C8531B; --focus: #2A72B8;
+  --danger: #B3261E; --on-danger: #FFFFFF; --danger-bg: #FCE9E7; --warn: #6F4B00; --warn-bg: #FFF1CC;
+  --x: rgba(27, 36, 55, .26); --backdrop: rgba(16, 20, 28, .5); --sombra: rgba(27, 36, 55, .14); --on-c: #FFFFFF;
+  --azul: #2A72B8; --azul-t: #DCEAF7; --azul-i: #123F6A;
+  --naranja: #B85214; --naranja-t: #FBE2CD; --naranja-i: #6E3208;
+  --verde: #11805F; --verde-t: #D4EEE4; --verde-i: #0A4A37;
+  --morado: #5B3FB5; --morado-t: #E4DDF7; --morado-i: #2F2068;
+  --rosa: #B8326B; --rosa-t: #F9DCE8; --rosa-i: #6B1238;
+  --pizarra: #4A5A70; --pizarra-t: #E1E6EC; --pizarra-i: #26313F;
+  --f-text: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-display: "Space Grotesk", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #10141C; --surface: #181E2A; --cell: #212A3A; --ink: #E7EAF1; --muted: #9BA5B8; --line: #2D3648;
+    --accent: #E7EAF1; --on-accent: #10141C; --hoy: #FF8A4C; --focus: #7DB7F0;
+    --danger: #FF8E85; --on-danger: #2A0E0C; --danger-bg: #3B1C1A; --warn: #FFD27A; --warn-bg: #3A2E12;
+    --x: rgba(231, 234, 241, .26); --backdrop: rgba(0, 0, 0, .6); --sombra: rgba(0, 0, 0, .5); --on-c: #FFFFFF;
+    --azul-t: #1B3552; --azul-i: #BBD9F5; --naranja-t: #4A2A14; --naranja-i: #F8CFB0; --verde-t: #123D31; --verde-i: #B4E6D5;
+    --morado-t: #2C2452; --morado-i: #D5CCF7; --rosa-t: #4A1B30; --rosa-i: #F7C6DA; --pizarra-t: #2A3342; --pizarra-i: #D3DAE5;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #10141C; --surface: #181E2A; --cell: #212A3A; --ink: #E7EAF1; --muted: #9BA5B8; --line: #2D3648;
+  --accent: #E7EAF1; --on-accent: #10141C; --hoy: #FF8A4C; --focus: #7DB7F0;
+  --danger: #FF8E85; --on-danger: #2A0E0C; --danger-bg: #3B1C1A; --warn: #FFD27A; --warn-bg: #3A2E12;
+  --x: rgba(231, 234, 241, .26); --backdrop: rgba(0, 0, 0, .6); --sombra: rgba(0, 0, 0, .5); --on-c: #FFFFFF;
+  --azul-t: #1B3552; --azul-i: #BBD9F5; --naranja-t: #4A2A14; --naranja-i: #F8CFB0; --verde-t: #123D31; --verde-i: #B4E6D5;
+  --morado-t: #2C2452; --morado-i: #D5CCF7; --rosa-t: #4A1B30; --rosa-i: #F7C6DA; --pizarra-t: #2A3342; --pizarra-i: #D3DAE5;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 400 15px/1.5 var(--f-text); -webkit-font-smoothing: antialiased; }
+.app { max-width: 1180px; margin: 0 auto; padding-block: 22px 80px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 18px; }
+h1, h2, h3 { font-family: var(--f-display); margin: 0; text-wrap: balance; letter-spacing: -.01em; }
+p { margin: 0; }
+button { font-family: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.c-azul { --c: var(--azul); --ct: var(--azul-t); --ci: var(--azul-i); }
+.c-naranja { --c: var(--naranja); --ct: var(--naranja-t); --ci: var(--naranja-i); }
+.c-verde { --c: var(--verde); --ct: var(--verde-t); --ci: var(--verde-i); }
+.c-morado { --c: var(--morado); --ct: var(--morado-t); --ci: var(--morado-i); }
+.c-rosa { --c: var(--rosa); --ct: var(--rosa-t); --ci: var(--rosa-i); }
+.c-pizarra { --c: var(--pizarra); --ct: var(--pizarra-t); --ci: var(--pizarra-i); }
+
+/* Cabecera */
+.cab { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 14px 20px; }
+.sobre { margin-bottom: 4px; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--hoy); }
+h1 { font-size: clamp(24px, 4.2vw, 32px); font-weight: 700; line-height: 1.1; }
+.cab-acc { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.seg { display: inline-flex; background: var(--cell); border-radius: 11px; padding: 3px; gap: 2px; }
+.seg button { border: 0; background: none; font-weight: 600; font-size: 14px; color: var(--muted); padding: 7px 14px; border-radius: 8px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px var(--sombra); }
+.btn { border: 1px solid transparent; border-radius: 10px; font-weight: 600; font-size: 14px; line-height: 1.2; padding: 10px 14px; cursor: pointer; }
+.btn.prim { background: var(--accent); color: var(--on-accent); }
+.btn.sec { background: var(--surface); color: var(--ink); border-color: var(--line); }
+.btn.mini { padding: 7px 10px; font-size: 13px; }
+.btn.peligro { background: none; color: var(--danger); padding-inline: 6px; }
+.btn.peligro-lleno { background: var(--danger); color: var(--on-danger); }
+.btn:disabled { opacity: .55; cursor: default; }
+.ico { width: 38px; height: 38px; flex: none; display: inline-grid; place-items: center; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 10px; font-size: 20px; line-height: 1; cursor: pointer; padding: 0; }
+.ico svg { width: 16px; height: 16px; }
+.aviso { padding: 10px 12px; border-radius: 10px; background: var(--warn-bg); color: var(--warn); font-size: 14px; }
+.solo-lectura .edita { display: none !important; }
+
+/* Calendario */
+#vista-cal, #vista-eva { display: flex; flex-direction: column; gap: 14px; }
+.barra-mes { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.barra-mes h2 { font-size: 22px; font-weight: 600; margin-right: auto; }
+.tachar { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); cursor: pointer; }
+.tachar input { width: 17px; height: 17px; accent-color: var(--accent); }
+.leyenda { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13.5px; }
+.leyenda span { display: inline-flex; align-items: center; gap: 7px; min-width: 0; }
+.leyenda .tonos { color: var(--muted); }
+.sw { width: 11px; height: 11px; border-radius: 3px; background: var(--c); flex: none; }
+.sw.t { background: var(--ct); }
+.sw.g { width: 14px; height: 14px; border-radius: 4px; }
+.toque { display: none; font-size: 13px; color: var(--muted); }
+.cal-layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; align-items: start; }
+.dias-sem, .rejilla { display: grid; grid-template-columns: 30px repeat(7, minmax(0, 1fr)); gap: 4px; }
+.dias-sem { margin-bottom: 5px; font-size: 11.5px; font-weight: 600; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
+.dias-sem span { padding-left: 9px; }
+.dias-sem .sem-h { padding-left: 0; text-align: center; }
+.sem { display: grid; place-items: center; font: 600 12px var(--f-display); color: var(--muted); font-variant-numeric: tabular-nums; }
+.dia { min-width: 0; min-height: 98px; background-color: var(--cell); border-radius: 9px; padding: 5px; display: flex; flex-direction: column; gap: 3px; cursor: pointer; }
+.dia.fuera { background: none; cursor: default; }
+.num { align-self: flex-start; border: 0; background: none; color: var(--ink); font: 600 13px/1 var(--f-display); padding: 4px 5px; border-radius: 6px; cursor: pointer; font-variant-numeric: tabular-nums; }
+.dia.pasado .num { color: var(--muted); }
+.dia.hoy { box-shadow: inset 0 0 0 2px var(--hoy); }
+.dia.hoy .num { background: var(--hoy); color: var(--on-accent); }
+.rejilla.tachar .dia.pasado {
+  background-image:
+    linear-gradient(to top right, transparent calc(50% - .7px), var(--x) calc(50% - .7px), var(--x) calc(50% + .7px), transparent calc(50% + .7px)),
+    linear-gradient(to bottom right, transparent calc(50% - .7px), var(--x) calc(50% - .7px), var(--x) calc(50% + .7px), transparent calc(50% + .7px));
+  background-size: calc(100% - 14px) calc(100% - 14px); background-position: center; background-repeat: no-repeat;
+}
+.chip { display: block; width: 100%; border: 0; text-align: left; font-size: 11.5px; font-weight: 500; line-height: 1.25; padding: 3px 6px; border-radius: 5px; background: var(--ct); color: var(--ci); cursor: pointer; overflow-wrap: anywhere; }
+.chip.fuerte { background: var(--c); color: var(--on-c); font-weight: 600; }
+.chip small { display: block; font-size: 10px; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; opacity: .85; }
+.estado-cal { font-size: 14px; color: var(--muted); padding: 2px 2px 0; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+
+/* Columna lateral */
+.lado { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+.lado h2 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+.lista { list-style: none; margin: 0; padding: 0; }
+.hito { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 10px; align-items: center; width: 100%; text-align: left; background: none; border: 0; border-top: 1px solid var(--line); padding: 9px 2px; font-size: 14px; color: inherit; cursor: pointer; }
+.lista li:first-child .hito { border-top: 0; }
+.fechita { display: grid; justify-items: center; line-height: 1; padding: 7px 0 6px; border-radius: 8px; background: var(--ct); color: var(--ci); }
+.fechita b { font: 700 16px/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.fechita small { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; margin-top: 3px; }
+.hito.fuerte .fechita { background: var(--c); color: var(--on-c); }
+.hito .tit { display: block; font-weight: 600; overflow-wrap: anywhere; }
+.hito .sub, .simple .sub { display: block; font-size: 12.5px; color: var(--muted); overflow-wrap: anywhere; }
+.cuando { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+.simple { display: flex; gap: 10px; align-items: baseline; width: 100%; text-align: left; background: none; border: 0; border-top: 1px solid var(--line); padding: 9px 2px; font-size: 14px; color: inherit; cursor: pointer; }
+.lista li:first-child .simple { border-top: 0; }
+.simple .sw { transform: translateY(1px); }
+.simple b { font-weight: 600; }
+.vacio { font-size: 14px; color: var(--muted); }
+
+/* Evaluaciones por materia */
+.materia { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 16px 12px; min-width: 0; }
+.materia > header { display: flex; align-items: center; gap: 10px; }
+.materia h2 { font-size: 18px; font-weight: 600; flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.stats { display: flex; flex-wrap: wrap; gap: 4px 22px; margin: 10px 0 8px; font-size: 13.5px; color: var(--muted); }
+.stats b { color: var(--ink); font: 600 15px var(--f-display); font-variant-numeric: tabular-nums; }
+.stats .ojo { color: var(--warn); background: var(--warn-bg); padding: 0 8px; border-radius: 999px; }
+.evals { list-style: none; margin: 0 0 10px; padding: 0; }
+.cols-h, .eval { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.25fr) 62px 86px; gap: 2px 14px; align-items: center; }
+.cols-h { font-size: 11.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); padding: 4px 4px 6px; }
+.cols-h span:nth-child(n+3), .e-peso, .e-nota { text-align: right; }
+.eval { width: 100%; text-align: left; background: none; border: 0; border-top: 1px solid var(--line); padding: 10px 4px; font-size: 14px; color: inherit; }
+button.eval { cursor: pointer; }
+.e-main b { display: block; font-weight: 600; overflow-wrap: anywhere; }
+.e-main small { display: block; color: var(--muted); font-size: 13px; overflow-wrap: anywhere; }
+.e-fecha { font-size: 13.5px; }
+.e-peso, .e-nota { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.e-nota b { font: 700 16px var(--f-display); color: var(--ci); }
+.e-nota small { display: block; font-size: 11.5px; color: var(--muted); }
+.lbl { display: none; font-style: normal; color: var(--muted); font-size: 12.5px; }
+.eval.pasada .e-main b, .eval.pasada .e-fecha, .eval.pasada .e-peso { color: var(--muted); }
+.pill { display: inline-block; font-size: 11.5px; font-weight: 600; padding: 1px 8px; border-radius: 999px; background: var(--cell); color: var(--muted); white-space: nowrap; }
+.pill.abierta { background: var(--ct); color: var(--ci); }
+.pill.hoy { background: var(--hoy); color: var(--on-accent); }
+.pie-eva { display: flex; }
+
+/* Diálogos */
+dialog { border: 0; padding: 0; border-radius: 16px; background: var(--surface); color: var(--ink); width: min(540px, calc(100vw - 24px)); max-height: min(92dvh, 780px); box-shadow: 0 12px 40px var(--sombra); overflow: hidden; }
+dialog[open] { display: flex; flex-direction: column; }
+dialog::backdrop { background: var(--backdrop); }
+dialog > form { display: flex; flex-direction: column; min-height: 0; flex: 1; }
+.dlg-cab { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 16px 16px 10px; }
+.dlg-cab h2 { font-size: 19px; font-weight: 600; }
+.dlg-cab .sub { font-size: 13.5px; color: var(--muted); margin-top: 2px; }
+.dlg-cuerpo { padding: 2px 16px 14px; overflow-y: auto; min-height: 0; display: flex; flex-direction: column; gap: 12px; }
+.dlg-pie { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px 16px calc(14px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); font-size: 14px; }
+.esp { flex: 1; }
+label, legend { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 4px; padding: 0; }
+.opc { font-weight: 400; }
+input[type="text"], input[type="date"], select { width: 100%; min-height: 42px; font: 400 15px var(--f-text); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 9px; padding: 8px 10px; }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.tipo div, .colores div { display: flex; flex-wrap: wrap; gap: 6px; }
+.tipo label, .colores label { display: inline-flex; align-items: center; gap: 7px; margin: 0; border: 1px solid var(--line); padding: 8px 11px; border-radius: 9px; font-size: 14px; font-weight: 500; color: var(--ink); cursor: pointer; }
+.tipo label:has(input:checked), .colores label:has(input:checked) { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.tipo input, .colores input { accent-color: var(--accent); margin: 0; }
+.par { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.par.tres { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+#f-dias { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+.fila-dia { display: grid; grid-template-columns: minmax(0, 160px) minmax(0, 1fr) 38px; gap: 8px; align-items: end; }
+.ayuda { font-size: 13px; color: var(--muted); }
+.error { color: var(--danger); background: var(--danger-bg); padding: 8px 10px; border-radius: 8px; font-size: 13.5px; }
+.lista-dia { list-style: none; margin: 0; padding: 0; }
+.lista-dia li { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 10px 0; border-top: 1px solid var(--line); }
+.lista-dia li:first-child { border-top: 0; }
+.lista-dia .sw { margin-top: 4px; }
+.lista-dia b { display: block; font-weight: 600; overflow-wrap: anywhere; }
+.lista-dia small { display: block; font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+#toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 999px; font-size: 14px; font-weight: 500; z-index: 50; max-width: calc(100vw - 32px); text-align: center; }
+
+@media (max-width: 960px) {
+  .cal-layout { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 720px) {
+  .cab-acc { width: 100%; justify-content: space-between; }
+  .barra-mes .tachar { order: 9; width: 100%; }
+  .dias-sem, .rejilla { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+  .sem, .dias-sem .sem-h { display: none; }
+  .dias-sem span { padding-left: 0; text-align: center; }
+  .dia { min-height: 60px; padding: 3px 4px 5px; border-radius: 8px; gap: 2px; }
+  .num { align-self: center; padding: 4px 6px; }
+  .chip { height: 6px; padding: 0; border-radius: 3px; pointer-events: none; background: var(--c); opacity: .38; }
+  .chip.fuerte { opacity: 1; }
+  .chip small, .chip span { display: none; }
+  .toque { display: block; }
+  .cols-h { display: none; }
+  .eval { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "main nota" "fecha peso"; gap: 4px 14px; }
+  .e-main { grid-area: main; }
+  .e-fecha { grid-area: fecha; }
+  .e-peso { grid-area: peso; align-self: end; }
+  .e-nota { grid-area: nota; align-self: start; }
+  .lbl { display: inline; }
+  .fila-dia { grid-template-columns: minmax(0, 1fr) 38px; }
+  .fila-dia .etq { grid-column: 1 / 2; grid-row: 2; }
+  .par.tres { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .btn, .ico, .seg button { transition: background-color .12s, border-color .12s; }
+}
+
+/* Copia de los datos: solo en la versión que guarda en el dispositivo */
+.datos { position: relative; border-top: 1px solid var(--line); padding-top: 14px; font-size: 13.5px; color: var(--muted); display: flex; flex-direction: column; gap: 10px; }
+.datos b { color: var(--ink); font-weight: 600; }
+.datos-acc { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.oculto { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="cab">
+    <div>
+      <p class="sobre">Universidad Metropolitana · período 2627-1</p>
+      <h1>Calendario de evaluaciones</h1>
+    </div>
+    <div class="cab-acc">
+      <div class="seg" role="group" aria-label="Vista">
+        <button type="button" id="tab-cal" aria-pressed="true">Calendario</button>
+        <button type="button" id="tab-eva" aria-pressed="false">Evaluaciones</button>
+      </div>
+      <button type="button" id="btn-nueva" class="btn prim edita">+ Evaluación</button>
+    </div>
+  </header>
+
+  <p id="aviso" class="aviso" role="status" hidden></p>
+
+  <section id="vista-cal" aria-label="Calendario">
+    <div class="barra-mes">
+      <h2 id="mes-titulo">Mes</h2>
+      <label class="tachar" for="chk-tachar"><input type="checkbox" id="chk-tachar"> Tachar días pasados</label>
+      <button type="button" id="mes-hoy" class="btn sec mini">Hoy</button>
+      <button type="button" id="mes-ant" class="ico" aria-label="Mes anterior">‹</button>
+      <button type="button" id="mes-sig" class="ico" aria-label="Mes siguiente">›</button>
+    </div>
+    <div class="leyenda" id="leyenda"></div>
+    <p class="toque">Toca un día para ver sus evaluaciones.</p>
+    <div class="cal-layout">
+      <div>
+        <div class="dias-sem" aria-hidden="true"><span class="sem-h">Sem.</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span></div>
+        <div class="rejilla" id="rejilla"></div>
+        <div class="estado-cal" id="estado-cal"></div>
+      </div>
+      <aside class="lado">
+        <section>
+          <h2>Próximas fechas</h2>
+          <ol class="lista" id="proximas"></ol>
+        </section>
+        <section id="sec-sinfecha" hidden>
+          <h2>Sin fecha todavía</h2>
+          <ul class="lista" id="sinfecha"></ul>
+        </section>
+      </aside>
+    </div>
+  </section>
+
+  <section id="vista-eva" aria-label="Evaluaciones por materia" hidden>
+    <div id="materias" style="display:flex;flex-direction:column;gap:14px"></div>
+    <div class="pie-eva edita"><button type="button" id="btn-materia" class="btn sec">+ Materia</button></div>
+  </section>
+
+  <section id="sec-datos" class="datos" aria-label="Copia de tus datos" hidden>
+    <p><b>Tus datos se guardan solo en este dispositivo.</b> Exporta una copia para respaldarlos o para pasarlos a otro teléfono o computadora.</p>
+    <div class="datos-acc">
+      <button type="button" id="btn-exportar" class="btn sec mini">Exportar copia</button>
+      <button type="button" id="btn-importar" class="btn sec mini">Importar copia</button>
+      <input type="file" id="inp-importar" class="oculto" accept="application/json,.json" tabindex="-1" aria-hidden="true">
+    </div>
+    <div id="datos-confirmar" class="datos-acc" hidden>
+      <span id="datos-pregunta"></span>
+      <button type="button" id="datos-si" class="btn peligro-lleno mini">Reemplazar</button>
+      <button type="button" id="datos-no" class="btn sec mini">Cancelar</button>
+    </div>
+    <p id="datos-msg" class="error" role="alert" hidden></p>
+  </section>
+</div>
+
+<dialog id="dlg-eva" aria-labelledby="eva-titulo">
+  <form id="form-eva" novalidate>
+    <div class="dlg-cab"><h2 id="eva-titulo">Nueva evaluación</h2><button type="button" class="ico" data-cerrar aria-label="Cerrar">×</button></div>
+    <div class="dlg-cuerpo">
+      <div><label for="f-mat">Materia</label><select id="f-mat"></select></div>
+      <div><label for="f-nombre">Nombre</label><input id="f-nombre" type="text" maxlength="120" autocomplete="off" placeholder="Caso Estudio 5"></div>
+      <div><label for="f-detalle">Detalle <span class="opc">(opcional)</span></label><input id="f-detalle" type="text" maxlength="200" autocomplete="off" placeholder="Unidad 3 · grupal"></div>
+      <fieldset class="tipo"><legend>Fecha</legend><div>
+        <label for="f-tipo-dias"><input type="radio" name="f-tipo" id="f-tipo-dias" value="dias"> Un día o varios</label>
+        <label for="f-tipo-ventana"><input type="radio" name="f-tipo" id="f-tipo-ventana" value="ventana"> Ventana de entrega</label>
+        <label for="f-tipo-sinfecha"><input type="radio" name="f-tipo" id="f-tipo-sinfecha" value="sinfecha"> Sin fecha todavía</label>
+      </div></fieldset>
+      <div id="sec-ventana" class="par" hidden>
+        <div><label for="f-inicio">Abre</label><input id="f-inicio" type="date"></div>
+        <div><label for="f-fin">Cierra</label><input id="f-fin" type="date"></div>
+      </div>
+      <div id="sec-dias" hidden>
+        <div id="f-dias"></div>
+        <button type="button" id="f-dia-mas" class="btn sec mini">+ Otro día</button>
+      </div>
+      <div class="par tres">
+        <div><label for="f-peso">Peso (%)</label><input id="f-peso" type="text" inputmode="decimal" autocomplete="off" placeholder="10"></div>
+        <div><label for="f-nota">Nota</label><input id="f-nota" type="text" inputmode="decimal" autocomplete="off" placeholder="—"></div>
+        <div><label for="f-sobre">Sobre</label><input id="f-sobre" type="text" inputmode="decimal" autocomplete="off" placeholder="20"></div>
+      </div>
+      <p class="ayuda" id="f-calc"></p>
+      <p class="error" id="f-error" role="alert" hidden></p>
+    </div>
+    <div class="dlg-pie" id="f-pie">
+      <button type="button" id="f-borrar" class="btn peligro">Eliminar</button>
+      <span class="esp"></span>
+      <button type="button" class="btn sec" data-cerrar>Cancelar</button>
+      <button type="submit" id="f-guardar" class="btn prim">Guardar</button>
+    </div>
+    <div class="dlg-pie" id="f-confirmar" hidden>
+      <span>¿Eliminar esta evaluación?</span>
+      <span class="esp"></span>
+      <button type="button" id="f-no" class="btn sec">No</button>
+      <button type="button" id="f-si" class="btn peligro-lleno">Sí, eliminar</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-mat" aria-labelledby="mat-titulo">
+  <form id="form-mat" novalidate>
+    <div class="dlg-cab"><h2 id="mat-titulo">Nueva materia</h2><button type="button" class="ico" data-cerrar aria-label="Cerrar">×</button></div>
+    <div class="dlg-cuerpo">
+      <div><label for="m-nombre">Nombre</label><input id="m-nombre" type="text" maxlength="120" autocomplete="off" placeholder="Termodinámica aplicada"></div>
+      <fieldset class="colores"><legend>Color</legend><div id="m-colores"></div></fieldset>
+      <p class="error" id="m-error" role="alert" hidden></p>
+    </div>
+    <div class="dlg-pie" id="m-pie">
+      <button type="button" id="m-borrar" class="btn peligro">Eliminar</button>
+      <span class="esp"></span>
+      <button type="button" class="btn sec" data-cerrar>Cancelar</button>
+      <button type="submit" id="m-guardar" class="btn prim">Guardar</button>
+    </div>
+    <div class="dlg-pie" id="m-confirmar" hidden>
+      <span id="m-pregunta">¿Eliminar esta materia?</span>
+      <span class="esp"></span>
+      <button type="button" id="m-no" class="btn sec">No</button>
+      <button type="button" id="m-si" class="btn peligro-lleno">Sí, eliminar</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-dia" aria-labelledby="dia-titulo">
+  <div class="dlg-cab"><div><h2 id="dia-titulo">Día</h2><p class="sub" id="dia-sub"></p></div><button type="button" class="ico" data-cerrar aria-label="Cerrar">×</button></div>
+  <div class="dlg-cuerpo">
+    <ul class="lista-dia" id="dia-lista"></ul>
+    <p class="vacio" id="dia-vacio" hidden>No hay evaluaciones este día.</p>
+  </div>
+  <div class="dlg-pie">
+    <button type="button" id="dia-agregar" class="btn prim edita">+ Evaluación este día</button>
+    <span class="esp"></span>
+    <button type="button" class="btn sec" data-cerrar>Cerrar</button>
+  </div>
+</dialog>
+
+<div id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>window.CALENDARIO_LOCAL = {"materias":{"pet":{"color":"verde","nombre":"Petroquímica e Integración de Procesos","orden":2},"rbi":{"color":"naranja","nombre":"Gestión de Integridad de Activos y Confiabilidad","orden":1},"ref":{"color":"azul","nombre":"Esquema de Refinación Compleja","orden":0}},"evaluaciones":{"pet-caso-cracker":{"detalle":"Grupal · Grupo 1: Costa del Golfo de EE. UU. (Texas y Luisiana)","dias":[{"etiqueta":"Entrega de láminas · 11:59 pm","fecha":"2026-10-19"},{"etiqueta":"Presentación del caso","fecha":"2026-10-20"}],"fin":null,"inicio":null,"materia":"pet","nombre":"Caso de estudio: ¿cracker de etano o de nafta?","nota":null,"peso":40,"sobre":null,"tipo":"dias"},"pet-presentacion-final":{"detalle":"Pregunta central del curso en el contexto venezolano","dias":[],"fin":null,"inicio":null,"materia":"pet","nombre":"Presentación final","nota":null,"peso":40,"sobre":null,"tipo":"sinfecha"},"pet-quiz-1":{"detalle":"Evaluación continua · online · el 20 % se reparte entre todos los quizzes","dias":[{"etiqueta":"Online","fecha":"2026-10-09"}],"fin":null,"inicio":null,"materia":"pet","nombre":"Quiz 1","nota":null,"peso":20,"sobre":null,"tipo":"dias"},"rbi-cuestionarios-teoricos":{"detalle":"","dias":[{"etiqueta":"","fecha":"2026-11-19"}],"fin":null,"inicio":null,"materia":"rbi","nombre":"Cuestionarios teóricos","nota":null,"peso":20,"sobre":null,"tipo":"dias"},"rbi-proyecto-integrador":{"detalle":"","dias":[{"etiqueta":"","fecha":"2026-11-26"},{"etiqueta":"","fecha":"2026-12-03"}],"fin":null,"inicio":null,"materia":"rbi","nombre":"Proyecto integrador","nota":null,"peso":20,"sobre":null,"tipo":"dias"},"rbi-talleres-practicos":{"detalle":"","dias":[],"fin":null,"inicio":null,"materia":"rbi","nombre":"Talleres prácticos","nota":null,"peso":40,"sobre":null,"tipo":"sinfecha"},"rbi-tarea-1":{"detalle":"Individual · las dos tareas suman 20 %","dias":[{"etiqueta":"Entrega","fecha":"2026-10-07"}],"fin":null,"inicio":null,"materia":"rbi","nombre":"Tarea 1","nota":null,"peso":10,"sobre":null,"tipo":"dias"},"rbi-tarea-2":{"detalle":"Individual · las dos tareas suman 20 %","dias":[{"etiqueta":"Entrega","fecha":"2026-11-11"}],"fin":null,"inicio":null,"materia":"rbi","nombre":"Tarea 2","nota":null,"peso":10,"sobre":null,"tipo":"dias"},"ref-caso-estudio-1":{"detalle":"Índice de Complejidad de Nelson · grupal","dias":[],"fin":"2026-09-29","inicio":"2026-09-24","materia":"ref","nombre":"Caso Estudio 1","nota":null,"peso":10,"sobre":null,"tipo":"ventana"},"ref-caso-estudio-2":{"detalle":"Balance global de masa, energía e hidrógeno · grupal","dias":[],"fin":"2026-11-03","inicio":"2026-10-29","materia":"ref","nombre":"Caso Estudio 2","nota":null,"peso":10,"sobre":null,"tipo":"ventana"},"ref-caso-estudio-3":{"detalle":"Economía del esquema de refinación · grupal","dias":[],"fin":"2026-11-17","inicio":"2026-11-12","materia":"ref","nombre":"Caso Estudio 3","nota":null,"peso":10,"sobre":null,"tipo":"ventana"},"ref-caso-estudio-4":{"detalle":"Simulación usando un software · grupal","dias":[],"fin":"2026-12-01","inicio":"2026-11-26","materia":"ref","nombre":"Caso Estudio 4","nota":null,"peso":10,"sobre":null,"tipo":"ventana"},"ref-cuestionario-1":{"detalle":"Unidad 0 · individual, en Moodle","dias":[],"fin":"2026-09-22","inicio":"2026-09-17","materia":"ref","nombre":"Cuestionario 1","nota":null,"peso":15,"sobre":null,"tipo":"ventana"},"ref-cuestionario-2":{"detalle":"Balance global de masa, energía e hidrógeno · individual, en Moodle","dias":[],"fin":"2026-11-10","inicio":"2026-11-05","materia":"ref","nombre":"Cuestionario 2","nota":null,"peso":15,"sobre":null,"tipo":"ventana"},"ref-exposicion-grupal":{"detalle":"Unidad 2 · arquitectura de refinerías complejas","dias":[{"etiqueta":"","fecha":"2026-10-07"},{"etiqueta":"","fecha":"2026-10-14"}],"fin":null,"inicio":null,"materia":"ref","nombre":"Exposición grupal","nota":null,"peso":10,"sobre":null,"tipo":"dias"},"ref-proyecto-integrador":{"detalle":"Grupal, con simulación en Aspen Plus","dias":[{"etiqueta":"Entrega","fecha":"2026-12-01"}],"fin":null,"inicio":null,"materia":"ref","nombre":"Proyecto integrador","nota":null,"peso":20,"sobre":null,"tipo":"dias"}}};</script>
+
+<script>
+(() => {
+  'use strict';
+
+  // Lunes de la semana 1 del período, según el calendario académico de la UNIMET.
+  const INICIO_SEM1 = '2026-09-14';
+  const SEMANAS = 12;
+  const COLORES = ['azul', 'naranja', 'verde', 'morado', 'rosa', 'pizarra'];
+  const NOMBRE_COLOR = { azul: 'Azul', naranja: 'Naranja', verde: 'Verde', morado: 'Morado', rosa: 'Rosa', pizarra: 'Gris' };
+  const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  const MESES_C = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+  const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+  const DIAS_C = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+  const LAPIZ = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.2 2.3l2.5 2.5L5.5 13H3v-2.5z"/><path d="M9.7 3.8l2.5 2.5"/></svg>';
+
+  const $ = (s, r = document) => r.querySelector(s);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const pad = n => String(n).padStart(2, '0');
+  const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const esISO = s => typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s);
+  const fecha = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d, 12); };
+  const dif = (a, b) => Math.round((fecha(b) - fecha(a)) / 86400000);
+  const mas = (s, n) => { const d = fecha(s); d.setDate(d.getDate() + n); return iso(d); };
+  const hoy = () => iso(new Date());
+  const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+  const fLarga = s => { const d = fecha(s); return `${DIAS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]}`; };
+  const fCorta = s => { const d = fecha(s); return `${DIAS_C[d.getDay()]} ${d.getDate()} ${MESES_C[d.getMonth()]}`; };
+  const nf = (x, dec) => new Intl.NumberFormat('es', dec == null ? { maximumFractionDigits: 2 } : { minimumFractionDigits: dec, maximumFractionDigits: dec }).format(x);
+  const numONull = v => (v === null || v === undefined || v === '' || !isFinite(Number(v))) ? null : Number(v);
+  const semana = s => { const n = Math.floor(dif(INICIO_SEM1, s) / 7) + 1; return n >= 1 && n <= SEMANAS ? n : null; };
+  const relativo = f => { const d = dif(hoy(), f); return d === 0 ? 'hoy' : d === 1 ? 'mañana' : d === -1 ? 'ayer' : d > 0 ? `en ${d} días` : `hace ${-d} días`; };
+
+  function leer(k, def) { try { return localStorage.getItem('calev:' + k) ?? def; } catch { return def; } }
+  function recordar(k, v) { try { localStorage.setItem('calev:' + k, v); } catch { /* sin almacenamiento local */ } }
+
+  const E = {
+    db: null, local: null, sinDb: false, sinGuardado: false, puedeEditar: true, errorDatos: false, lento: false,
+    rec: { mat: false, eva: false }, conf: { mat: false, eva: false },
+    materias: [], evals: [],
+    vista: leer('vista', 'cal') === 'eva' ? 'eva' : 'cal',
+    tachar: leer('tachar', '1') === '1',
+    mes: (() => { const d = new Date(); return { y: d.getFullYear(), m: d.getMonth() }; })(),
+    ultimoHoy: hoy(),
+  };
+  const cargando = () => !E.sinDb && !(E.rec.mat && E.rec.eva);
+
+  /* ---------- Datos derivados ---------- */
+  const matPorId = id => E.materias.find(m => m.id === id);
+  const colorDe = e => { const m = matPorId(e.materia); return m && COLORES.includes(m.color) ? m.color : 'pizarra'; };
+  const ordenMat = id => { const m = matPorId(id); return m ? m.orden : 9999; };
+
+  function rango(e) {
+    if (e.tipo === 'ventana' && e.inicio && e.fin) return [e.inicio, e.fin];
+    if (e.tipo === 'dias' && e.dias.length) { const f = e.dias.map(d => d.fecha).sort(); return [f[0], f[f.length - 1]]; }
+    return null;
+  }
+  function estadoDe(e) {
+    const r = rango(e), h = hoy();
+    if (!r) return 'sinfecha';
+    if (r[1] < h) return 'pasada';
+    if (e.tipo === 'ventana') return r[0] <= h ? 'abierta' : 'proxima';
+    return e.dias.some(d => d.fecha === h) ? 'hoy' : 'proxima';
+  }
+  function nota20(e) { return e.nota != null && e.sobre > 0 ? e.nota / e.sobre * 20 : null; }
+  function resumen(mid) {
+    let n = 0, total = 0, evaluado = 0, puntos = 0;
+    for (const e of E.evals) {
+      if (e.materia !== mid) continue;
+      n++;
+      if (!(e.peso > 0)) continue;
+      total += e.peso;
+      const x = nota20(e);
+      if (x != null) { evaluado += e.peso; puntos += x / 20 * e.peso; }
+    }
+    return { n, total, evaluado, acumulado: puntos / 100 * 20, posibles: evaluado / 100 * 20 };
+  }
+  function porDia() {
+    const mapa = new Map();
+    const poner = (f, x) => { if (!mapa.has(f)) mapa.set(f, []); mapa.get(f).push(x); };
+    for (const e of E.evals) {
+      if (e.tipo === 'ventana' && e.inicio && e.fin && e.inicio <= e.fin) {
+        const n = Math.min(dif(e.inicio, e.fin), 180);
+        for (let i = 0; i <= n; i++) {
+          const rol = i === n ? 'cierra' : i === 0 ? 'abre' : 'medio';
+          poner(mas(e.inicio, i), { e, rol, etiqueta: '', fuerte: rol === 'cierra' });
+        }
+      } else if (e.tipo === 'dias') {
+        for (const d of e.dias) poner(d.fecha, { e, rol: 'dia', etiqueta: d.etiqueta, fuerte: true });
+      }
+    }
+    for (const l of mapa.values()) l.sort((a, b) => ordenMat(a.e.materia) - ordenMat(b.e.materia) || (b.fuerte - a.fuerte) || a.e.nombre.localeCompare(b.e.nombre, 'es'));
+    return mapa;
+  }
+  function textoChip(x) {
+    if (x.rol === 'abre') return ['Abre', x.e.nombre];
+    if (x.rol === 'cierra') return ['Cierra', x.e.nombre];
+    return [x.rol === 'dia' ? x.etiqueta : '', x.e.nombre];
+  }
+  function tituloLargo(x) {
+    if (x.rol === 'abre') return `Abre · ${x.e.nombre}`;
+    if (x.rol === 'cierra') return `Cierra · ${x.e.nombre}`;
+    if (x.rol === 'medio') return `Ventana abierta · ${x.e.nombre}`;
+    return x.etiqueta ? `${x.e.nombre} · ${x.etiqueta}` : x.e.nombre;
+  }
+  function proximos() {
+    const h = hoy(), out = [];
+    for (const e of E.evals) {
+      if (e.tipo === 'ventana' && e.inicio && e.fin) {
+        if (e.inicio >= h) out.push({ f: e.inicio, rol: 'abre', etiqueta: '', e, fuerte: false });
+        if (e.fin >= h) out.push({ f: e.fin, rol: 'cierra', etiqueta: '', e, fuerte: true });
+      } else if (e.tipo === 'dias') {
+        for (const d of e.dias) if (d.fecha >= h) out.push({ f: d.fecha, rol: 'dia', etiqueta: d.etiqueta, e, fuerte: true });
+      }
+    }
+    return out.sort((a, b) => a.f.localeCompare(b.f) || (b.fuerte - a.fuerte) || ordenMat(a.e.materia) - ordenMat(b.e.materia));
+  }
+  function fechasTexto(e) {
+    if (e.tipo === 'ventana' && e.inicio && e.fin) return `${fCorta(e.inicio)} → ${fCorta(e.fin)}`;
+    if (e.tipo === 'dias' && e.dias.length) return e.dias.map(d => fCorta(d.fecha)).join(' · ');
+    return 'Sin fecha todavía';
+  }
+  function subtitulo(e) {
+    const m = matPorId(e.materia);
+    return [m ? m.nombre : 'Sin materia', e.detalle, e.peso != null ? `${nf(e.peso)} %` : ''].filter(Boolean).join(' · ');
+  }
+  function subCorto(e) {
+    const m = matPorId(e.materia);
+    return [m ? m.nombre : 'Sin materia', e.peso != null ? `${nf(e.peso)} %` : ''].filter(Boolean).join(' · ');
+  }
+
+  /* ---------- Pintar ---------- */
+  function render() {
+    document.body.classList.toggle('solo-lectura', !E.puedeEditar || !E.db);
+    const a = $('#aviso');
+    let msg = '';
+    if (E.sinDb) msg = 'No se pudieron cargar tus evaluaciones en esta vista. Abre el calendario con tu sesión de Claude iniciada.';
+    else if (E.errorDatos) msg = 'Se perdió la conexión con tus datos. Vuelve a abrir el calendario para seguir editando.';
+    else if (E.sinGuardado) msg = 'Este navegador no deja guardar datos, por ejemplo en modo privado. Los cambios se perderán al cerrar la página.';
+    else if (E.lento) msg = cargando() ? 'Tus evaluaciones están tardando en cargar. Aparecerán aquí en cuanto respondan.' : 'No se pudo confirmar con el servidor. Lo que ves puede estar desactualizado.';
+    a.hidden = !msg;
+    a.textContent = msg;
+    $('#tab-cal').setAttribute('aria-pressed', String(E.vista === 'cal'));
+    $('#tab-eva').setAttribute('aria-pressed', String(E.vista === 'eva'));
+    $('#vista-cal').hidden = E.vista !== 'cal';
+    $('#vista-eva').hidden = E.vista !== 'eva';
+    $('#chk-tachar').checked = E.tachar;
+    $('#sec-datos').hidden = !E.local;
+    renderLeyenda();
+    renderCal();
+    renderLado();
+    renderEvals();
+  }
+
+  function renderLeyenda() {
+    const mats = E.materias.map(m => `<span class="c-${COLORES.includes(m.color) ? m.color : 'pizarra'}"><i class="sw"></i>${esc(m.nombre)}</span>`).join('');
+    const tonos = E.materias.length ? '<span class="tonos c-pizarra"><i class="sw t"></i>Tono claro: ventana abierta</span><span class="tonos c-pizarra"><i class="sw"></i>Tono fuerte: entrega o evaluación</span>' : '';
+    $('#leyenda').innerHTML = mats + tonos;
+  }
+
+  function renderCal() {
+    const { y, m } = E.mes;
+    $('#mes-titulo').textContent = `${cap(MESES[m])} ${y}`;
+    const offset = (new Date(y, m, 1, 12).getDay() + 6) % 7;
+    const nd = new Date(y, m + 1, 0).getDate();
+    const filas = Math.ceil((offset + nd) / 7);
+    const mapa = porDia(), h = hoy();
+    let html = '';
+    for (let f = 0; f < filas; f++) {
+      const s = semana(iso(new Date(y, m, 1 - offset + f * 7, 12)));
+      html += `<div class="sem" aria-hidden="true">${s || ''}</div>`;
+      for (let c = 0; c < 7; c++) {
+        const dia = f * 7 + c - offset + 1;
+        if (dia < 1 || dia > nd) { html += '<div class="dia fuera" aria-hidden="true"></div>'; continue; }
+        const fi = `${y}-${pad(m + 1)}-${pad(dia)}`;
+        const lista = mapa.get(fi) || [];
+        const chips = lista.map(x => {
+          const mat = matPorId(x.e.materia);
+          const [pre, txt] = textoChip(x);
+          const aria = `${tituloLargo(x)}, ${mat ? mat.nombre : 'sin materia'}`;
+          return `<button type="button" class="chip c-${colorDe(x.e)}${x.fuerte ? ' fuerte' : ''}" data-eval="${esc(x.e.id)}" aria-label="${esc(aria)}">${pre ? `<small>${esc(pre)}</small>` : ''}<span>${esc(txt)}</span></button>`;
+        }).join('');
+        const cuenta = lista.length ? `, ${lista.length} ${lista.length === 1 ? 'evaluación' : 'evaluaciones'}` : '';
+        html += `<div class="dia${fi < h ? ' pasado' : ''}${fi === h ? ' hoy' : ''}" data-dia="${fi}"><button type="button" class="num" data-dia="${fi}" aria-label="${esc(cap(fLarga(fi)) + cuenta)}"${fi === h ? ' aria-current="date"' : ''}>${dia}</button>${chips}</div>`;
+      }
+    }
+    const r = $('#rejilla');
+    r.classList.toggle('tachar', E.tachar);
+    r.innerHTML = html;
+
+    const st = $('#estado-cal');
+    if (cargando()) st.textContent = 'Cargando tus evaluaciones…';
+    else if (!E.sinDb && !E.evals.length) st.innerHTML = 'Todavía no hay evaluaciones. <button type="button" class="btn sec mini edita" id="vacio-nueva">Agregar la primera</button>';
+    else st.textContent = '';
+  }
+
+  function renderLado() {
+    const prox = proximos().slice(0, 8);
+    const lp = $('#proximas');
+    if (cargando()) lp.innerHTML = '<li class="vacio">Cargando…</li>';
+    else if (!prox.length) lp.innerHTML = '<li class="vacio">No hay fechas próximas.</li>';
+    else lp.innerHTML = prox.map(x => {
+      const d = fecha(x.f);
+      return `<li class="c-${colorDe(x.e)}"><button type="button" class="hito${x.fuerte ? ' fuerte' : ''}" data-eval="${esc(x.e.id)}" data-dia="${x.f}"><span class="fechita"><b>${d.getDate()}</b><small>${MESES_C[d.getMonth()]}</small></span><span><span class="tit">${esc(tituloLargo(x))}</span><span class="sub">${esc(subCorto(x.e))}</span></span><span class="cuando">${cap(relativo(x.f))}</span></button></li>`;
+    }).join('');
+
+    const sf = E.evals.filter(e => !rango(e)).sort((a, b) => ordenMat(a.materia) - ordenMat(b.materia) || a.nombre.localeCompare(b.nombre, 'es'));
+    $('#sec-sinfecha').hidden = !sf.length;
+    $('#sinfecha').innerHTML = sf.map(e => `<li class="c-${colorDe(e)}"><button type="button" class="simple" data-eval="${esc(e.id)}"><i class="sw"></i><span><b>${esc(e.nombre)}</b><span class="sub">${esc(subCorto(e))}</span></span></button></li>`).join('');
+  }
+
+  function filaEval(e) {
+    const est = estadoDe(e);
+    const pill = est === 'abierta' ? '<span class="pill abierta">Abierta</span>' : est === 'hoy' ? '<span class="pill hoy">Hoy</span>' : est === 'pasada' ? `<span class="pill">${e.tipo === 'ventana' ? 'Cerrada' : 'Ya pasó'}</span>` : '';
+    const x = nota20(e);
+    const nota = x != null ? `<i class="lbl">Nota </i><b>${nf(x)}</b><small>${nf(e.nota)} de ${nf(e.sobre)}</small>` : '';
+    const peso = e.peso != null ? `<i class="lbl">Peso </i>${nf(e.peso)} %` : '';
+    const cuerpo = `<span class="e-main"><b>${esc(e.nombre)}</b>${e.detalle ? `<small>${esc(e.detalle)}</small>` : ''}</span><span class="e-fecha">${esc(fechasTexto(e))} ${pill}</span><span class="e-peso">${peso}</span><span class="e-nota">${nota}</span>`;
+    const cls = `eval${est === 'pasada' ? ' pasada' : ''}`;
+    return E.puedeEditar && E.db
+      ? `<li><button type="button" class="${cls}" data-eval="${esc(e.id)}">${cuerpo}</button></li>`
+      : `<li><div class="${cls}">${cuerpo}</div></li>`;
+  }
+
+  function renderEvals() {
+    const cont = $('#materias');
+    if (cargando()) { cont.innerHTML = '<p class="vacio">Cargando tus evaluaciones…</p>'; return; }
+    const ordenar = l => l.sort((a, b) => { const ra = rango(a), rb = rango(b); return (ra ? ra[0] : '9999').localeCompare(rb ? rb[0] : '9999') || a.nombre.localeCompare(b.nombre, 'es'); });
+    const bloques = E.materias.map(m => ({ m, evs: ordenar(E.evals.filter(e => e.materia === m.id)) }));
+    const sueltas = ordenar(E.evals.filter(e => !matPorId(e.materia)));
+    if (sueltas.length) bloques.push({ m: { id: '', nombre: 'Sin materia', color: 'pizarra' }, evs: sueltas });
+    if (!bloques.length) { cont.innerHTML = '<p class="vacio">Todavía no hay materias. Crea la primera con «+ Materia» y agrega sus evaluaciones.</p>'; return; }
+    cont.innerHTML = bloques.map(({ m, evs }) => {
+      const r = resumen(m.id);
+      const color = COLORES.includes(m.color) ? m.color : 'pizarra';
+      const stats = [];
+      if (r.evaluado > 0) stats.push(`<span>Acumulado <b>${nf(r.acumulado, 2)}</b> de ${nf(r.posibles, 2)} posibles</span>`, `<span>Evaluado <b>${nf(r.evaluado)} %</b></span>`);
+      if (r.total > 0) stats.push(Math.abs(r.total - 100) < 0.005 ? '<span>Pesos <b>100 %</b></span>' : `<span class="ojo">Los pesos suman ${nf(r.total)} %</span>`);
+      return `<section class="materia c-${color}">
+        <header><i class="sw g"></i><h2>${esc(m.nombre)}</h2>${m.id ? `<button type="button" class="ico edita" data-mat-editar="${esc(m.id)}" aria-label="Editar la materia ${esc(m.nombre)}">${LAPIZ}</button>` : ''}</header>
+        ${stats.length ? `<p class="stats">${stats.join('')}</p>` : ''}
+        ${evs.length ? `<div class="cols-h" aria-hidden="true"><span>Evaluación</span><span>Fecha</span><span>Peso</span><span>Nota /20</span></div><ul class="evals">${evs.map(filaEval).join('')}</ul>` : '<p class="vacio" style="margin:10px 0">Esta materia todavía no tiene evaluaciones.</p>'}
+        ${m.id ? `<button type="button" class="btn sec mini edita" data-mat-agregar="${esc(m.id)}">+ Evaluación</button>` : ''}
+      </section>`;
+    }).join('');
+  }
+
+  /* ---------- Avisos breves ---------- */
+  let tToast = 0;
+  function toast(msg) {
+    const t = $('#toast');
+    t.textContent = msg;
+    t.hidden = false;
+    clearTimeout(tToast);
+    tToast = setTimeout(() => { t.hidden = true; }, 2600);
+  }
+  function error(sel, msg) { const p = $(sel); p.textContent = msg; p.hidden = !msg; }
+  function mensajeError(e) {
+    const c = e && e.code;
+    if (c === 'quota_exceeded') return 'No queda espacio para guardar más datos. Borra algo que ya no uses.';
+    if (c === 'invalid_argument') return 'No se pudo guardar: esta vista no tiene permiso para editar.';
+    if (c === 'revoked' || c === 'not_granted') return 'Esta vista ya no puede editar. Vuelve a abrir el calendario.';
+    return 'No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.';
+  }
+  async function conReintento(fn) {
+    try { return await fn(); }
+    catch (e) {
+      if (!e || e.code !== 'unavailable') throw e;
+      await new Promise(r => setTimeout(r, 400 + Math.random() * 600));
+      return fn();
+    }
+  }
+  async function escribir(fn, botones, errSel, ok, dlg) {
+    for (const b of botones) $(b).disabled = true;
+    try { await conReintento(fn); $(dlg).close(); toast(ok); }
+    catch (e) { error(errSel, mensajeError(e)); }
+    finally { for (const b of botones) $(b).disabled = false; }
+  }
+
+  /* ---------- Día ---------- */
+  let diaSel = '';
+  function abrirDia(f) {
+    diaSel = f;
+    const lista = porDia().get(f) || [];
+    const s = semana(f);
+    $('#dia-titulo').textContent = `${cap(fLarga(f))} de ${fecha(f).getFullYear()}`;
+    $('#dia-sub').textContent = (s ? `Semana ${s} · ` : '') + cap(relativo(f));
+    $('#dia-lista').innerHTML = lista.map(x => `<li class="c-${colorDe(x.e)}"><i class="sw g"></i><div><b>${esc(tituloLargo(x))}</b><small>${esc(subtitulo(x.e))}</small>${x.rol === 'abre' || x.rol === 'medio' ? `<small>Cierra el ${esc(fLarga(x.e.fin))}</small>` : ''}</div><button type="button" class="btn sec mini edita" data-eval="${esc(x.e.id)}">Editar</button></li>`).join('');
+    $('#dia-vacio').hidden = lista.length > 0;
+    $('#dlg-dia').showModal();
+  }
+
+  /* ---------- Evaluación ---------- */
+  let ed = null;
+  const tipoElegido = () => (document.querySelector('input[name="f-tipo"]:checked') || {}).value || 'sinfecha';
+  const leerNum = v => { const s = String(v).trim().replace(',', '.'); return s === '' ? null : Number(s); };
+  const aCampo = x => x == null ? '' : String(x).replace('.', ',');
+
+  function pintarDias() {
+    $('#f-dias').innerHTML = ed.dias.map((d, i) => `<div class="fila-dia">
+      <div><label for="f-dia-${i}">${ed.dias.length > 1 ? `Día ${i + 1}` : 'Día'}</label><input type="date" id="f-dia-${i}" data-i="${i}" data-k="fecha" value="${esc(d.fecha)}"></div>
+      <div class="etq"><label for="f-etq-${i}">Nota del día <span class="opc">(opcional)</span></label><input type="text" id="f-etq-${i}" data-i="${i}" data-k="etiqueta" maxlength="80" autocomplete="off" placeholder="Entrega · 11:59 pm" value="${esc(d.etiqueta)}"></div>
+      <button type="button" class="ico" data-quitar="${i}" aria-label="Quitar este día"${ed.dias.length < 2 ? ' disabled' : ''}>×</button>
+    </div>`).join('');
+  }
+  function verTipo() {
+    const t = tipoElegido();
+    $('#sec-ventana').hidden = t !== 'ventana';
+    $('#sec-dias').hidden = t !== 'dias';
+  }
+  function calcular() {
+    const n = leerNum($('#f-nota').value), s = leerNum($('#f-sobre').value), p = leerNum($('#f-peso').value);
+    let t = '';
+    if (n != null && s > 0 && isFinite(n) && n >= 0 && n <= s) {
+      t = `Equivale a ${nf(n / s * 20)} sobre 20`;
+      if (p > 0 && p <= 100) t += ` y suma ${nf(n / s * p / 100 * 20)} de ${nf(p / 100 * 20)} puntos a la nota final`;
+      t += '.';
+    }
+    $('#f-calc').textContent = t;
+    $('#f-calc').hidden = !t;
+  }
+  function pieEval(confirmar) { $('#f-pie').hidden = confirmar; $('#f-confirmar').hidden = !confirmar; }
+
+  function abrirEval(id, pre) {
+    pre = pre || {};
+    if (!E.puedeEditar || !E.db) return;
+    if (!E.materias.length) { abrirMateria(null); toast('Primero crea una materia.'); return; }
+    const e = id ? E.evals.find(x => x.id === id) : null;
+    if (id && !e) return;
+    ed = { id: e ? e.id : null, dias: e && e.tipo === 'dias' && e.dias.length ? e.dias.map(d => ({ fecha: d.fecha, etiqueta: d.etiqueta })) : [{ fecha: pre.fecha || '', etiqueta: '' }] };
+    $('#eva-titulo').textContent = e ? 'Editar evaluación' : 'Nueva evaluación';
+    $('#f-mat').innerHTML = (e && !matPorId(e.materia) ? '<option value="">Elige una materia</option>' : '') + E.materias.map(m => `<option value="${esc(m.id)}">${esc(m.nombre)}</option>`).join('');
+    $('#f-mat').value = e ? (matPorId(e.materia) ? e.materia : '') : (matPorId(pre.materia) ? pre.materia : E.materias[0].id);
+    $('#f-nombre').value = e ? e.nombre : '';
+    $('#f-detalle').value = e ? e.detalle : '';
+    $(`#f-tipo-${e ? e.tipo : 'dias'}`).checked = true;
+    $('#f-inicio').value = (e && e.inicio) || '';
+    $('#f-fin').value = (e && e.fin) || '';
+    $('#f-peso').value = e ? aCampo(e.peso) : '';
+    $('#f-nota').value = e ? aCampo(e.nota) : '';
+    $('#f-sobre').value = e && e.sobre != null ? aCampo(e.sobre) : '20';
+    $('#f-borrar').hidden = !e;
+    pintarDias(); verTipo(); calcular(); error('#f-error', ''); pieEval(false);
+    $('#dlg-eva').showModal();
+    if (!e) $('#f-nombre').focus();
+  }
+
+  $('#form-eva').addEventListener('input', ev => {
+    const t = ev.target;
+    if (t.dataset && t.dataset.k && ed) ed.dias[Number(t.dataset.i)][t.dataset.k] = t.value;
+    if (t.name === 'f-tipo') verTipo();
+    if (t.id === 'f-inicio' && !$('#f-fin').value) $('#f-fin').value = t.value;
+    calcular();
+    error('#f-error', '');
+  });
+  $('#form-eva').addEventListener('click', ev => {
+    const q = ev.target.closest('[data-quitar]');
+    if (q && ed && ed.dias.length > 1) { ed.dias.splice(Number(q.dataset.quitar), 1); pintarDias(); }
+  });
+  $('#f-dia-mas').addEventListener('click', () => { ed.dias.push({ fecha: '', etiqueta: '' }); pintarDias(); const u = $(`#f-dia-${ed.dias.length - 1}`); if (u) u.focus(); });
+  $('#f-borrar').addEventListener('click', () => pieEval(true));
+  $('#f-no').addEventListener('click', () => pieEval(false));
+  $('#f-si').addEventListener('click', () => escribir(() => E.db.collection('evaluaciones').doc(ed.id).delete(), ['#f-si', '#f-no'], '#f-error', 'Evaluación eliminada', '#dlg-eva'));
+  $('#form-eva').addEventListener('submit', ev => {
+    ev.preventDefault();
+    if (!ed || !$('#f-confirmar').hidden) return;
+    const tipo = tipoElegido(), materia = $('#f-mat').value, nombre = $('#f-nombre').value.trim();
+    const ini = $('#f-inicio').value, fin = $('#f-fin').value;
+    const peso = leerNum($('#f-peso').value), nota = leerNum($('#f-nota').value), sobre = leerNum($('#f-sobre').value);
+    const dias = ed.dias.filter(d => esISO(d.fecha)).map(d => ({ fecha: d.fecha, etiqueta: d.etiqueta.trim() })).sort((a, b) => a.fecha.localeCompare(b.fecha));
+    let msg = '';
+    if (!materia) msg = 'Elige la materia.';
+    else if (!nombre) msg = 'Escribe el nombre de la evaluación.';
+    else if (tipo === 'ventana' && (!esISO(ini) || !esISO(fin))) msg = 'Pon la fecha en que abre y la fecha en que cierra.';
+    else if (tipo === 'ventana' && fin < ini) msg = 'La fecha de cierre no puede ser anterior a la de apertura.';
+    else if (tipo === 'dias' && !dias.length) msg = 'Pon al menos una fecha, o elige «Sin fecha todavía».';
+    else if (peso != null && !(peso >= 0 && peso <= 100)) msg = 'El peso debe ser un número entre 0 y 100.';
+    else if (nota != null && !(nota >= 0)) msg = 'La nota debe ser un número.';
+    else if (nota != null && !(sobre > 0)) msg = 'Indica sobre cuánto es la nota, por ejemplo 20.';
+    else if (nota != null && nota > sobre) msg = 'La nota no puede ser mayor que el máximo.';
+    if (msg) { error('#f-error', msg); return; }
+    const data = {
+      materia, nombre, detalle: $('#f-detalle').value.trim(), peso, nota,
+      sobre: sobre > 0 ? sobre : null, tipo,
+      inicio: tipo === 'ventana' ? ini : null, fin: tipo === 'ventana' ? fin : null,
+      dias: tipo === 'dias' ? dias : [],
+    };
+    const col = E.db.collection('evaluaciones');
+    const ref = ed.id ? col.doc(ed.id) : col.doc();
+    escribir(() => ref.set(data), ['#f-guardar'], '#f-error', 'Guardado', '#dlg-eva');
+  });
+
+  /* ---------- Materia ---------- */
+  let em = null;
+  function pieMat(confirmar) { $('#m-pie').hidden = confirmar; $('#m-confirmar').hidden = !confirmar; }
+  function abrirMateria(id) {
+    if (!E.puedeEditar || !E.db) return;
+    const m = id ? matPorId(id) : null;
+    if (id && !m) return;
+    em = { id: m ? m.id : null };
+    const usados = E.materias.map(x => x.color);
+    const color = m ? m.color : (COLORES.find(c => !usados.includes(c)) || COLORES[0]);
+    $('#mat-titulo').textContent = m ? 'Editar materia' : 'Nueva materia';
+    $('#m-nombre').value = m ? m.nombre : '';
+    $('#m-colores').innerHTML = COLORES.map(c => `<label class="c-${c}" for="m-color-${c}"><input type="radio" name="m-color" id="m-color-${c}" value="${c}"${c === color ? ' checked' : ''}><i class="sw g"></i>${NOMBRE_COLOR[c]}</label>`).join('');
+    $('#m-borrar').hidden = !m;
+    error('#m-error', ''); pieMat(false);
+    $('#dlg-mat').showModal();
+    if (!m) $('#m-nombre').focus();
+  }
+  $('#m-borrar').addEventListener('click', () => {
+    const n = E.evals.filter(e => e.materia === em.id).length;
+    $('#m-pregunta').textContent = n ? `¿Eliminar esta materia y sus ${n} ${n === 1 ? 'evaluación' : 'evaluaciones'}?` : '¿Eliminar esta materia?';
+    pieMat(true);
+  });
+  $('#m-no').addEventListener('click', () => pieMat(false));
+  $('#m-si').addEventListener('click', () => escribir(async () => {
+    for (const e of E.evals.filter(x => x.materia === em.id)) await E.db.collection('evaluaciones').doc(e.id).delete();
+    await E.db.collection('materias').doc(em.id).delete();
+  }, ['#m-si', '#m-no'], '#m-error', 'Materia eliminada', '#dlg-mat'));
+  $('#form-mat').addEventListener('input', () => error('#m-error', ''));
+  $('#form-mat').addEventListener('submit', ev => {
+    ev.preventDefault();
+    if (!em || !$('#m-confirmar').hidden) return;
+    const nombre = $('#m-nombre').value.trim();
+    if (!nombre) { error('#m-error', 'Escribe el nombre de la materia.'); return; }
+    const color = (document.querySelector('input[name="m-color"]:checked') || {}).value || COLORES[0];
+    const actual = em.id ? matPorId(em.id) : null;
+    const orden = actual ? actual.orden : E.materias.reduce((mx, x) => Math.max(mx, x.orden), -1) + 1;
+    const col = E.db.collection('materias');
+    const ref = em.id ? col.doc(em.id) : col.doc();
+    escribir(() => ref.set({ nombre, color, orden }), ['#m-guardar'], '#m-error', 'Guardado', '#dlg-mat');
+  });
+
+  /* ---------- Eventos generales ---------- */
+  document.addEventListener('click', ev => {
+    const t = ev.target;
+    if (!(t instanceof Element)) return;
+    const cerrar = t.closest('[data-cerrar]');
+    if (cerrar) { const d = cerrar.closest('dialog'); if (d) d.close(); return; }
+    if (t.closest('#vacio-nueva')) { abrirEval(null); return; }
+    const be = t.closest('[data-eval]');
+    if (be) {
+      const dlg = be.closest('dialog');
+      if (E.puedeEditar && E.db) { if (dlg) dlg.close(); abrirEval(be.dataset.eval); }
+      else if (!dlg) { const dd = be.closest('[data-dia]'); if (dd) abrirDia(dd.dataset.dia); }
+      return;
+    }
+    const bd = t.closest('[data-dia]');
+    if (bd) { abrirDia(bd.dataset.dia); return; }
+    const bm = t.closest('[data-mat-editar]');
+    if (bm) { abrirMateria(bm.dataset.matEditar); return; }
+    const ba = t.closest('[data-mat-agregar]');
+    if (ba) { abrirEval(null, { materia: ba.dataset.matAgregar }); }
+  });
+  for (const d of document.querySelectorAll('dialog')) d.addEventListener('click', ev => { if (ev.target === d) d.close(); });
+
+  $('#btn-nueva').addEventListener('click', () => abrirEval(null));
+  $('#btn-materia').addEventListener('click', () => abrirMateria(null));
+  $('#dia-agregar').addEventListener('click', () => { $('#dlg-dia').close(); abrirEval(null, { fecha: diaSel }); });
+  $('#tab-cal').addEventListener('click', () => { E.vista = 'cal'; recordar('vista', 'cal'); render(); });
+  $('#tab-eva').addEventListener('click', () => { E.vista = 'eva'; recordar('vista', 'eva'); render(); });
+  $('#chk-tachar').addEventListener('change', ev => { E.tachar = ev.target.checked; recordar('tachar', E.tachar ? '1' : '0'); renderCal(); });
+  const moverMes = n => { const d = new Date(E.mes.y, E.mes.m + n, 1); E.mes = { y: d.getFullYear(), m: d.getMonth() }; renderCal(); };
+  $('#mes-ant').addEventListener('click', () => moverMes(-1));
+  $('#mes-sig').addEventListener('click', () => moverMes(1));
+  $('#mes-hoy').addEventListener('click', () => { const d = new Date(); E.mes = { y: d.getFullYear(), m: d.getMonth() }; renderCal(); });
+  setInterval(() => { const h = hoy(); if (h !== E.ultimoHoy) { E.ultimoHoy = h; render(); } }, 60000);
+
+  /* ---------- Datos ---------- */
+  function normMateria(id, d) {
+    return { id, nombre: String(d.nombre ?? 'Sin nombre'), color: COLORES.includes(d.color) ? d.color : 'pizarra', orden: isFinite(Number(d.orden)) ? Number(d.orden) : 0 };
+  }
+  function normEval(id, d) {
+    const tipo = ['ventana', 'dias', 'sinfecha'].includes(d.tipo) ? d.tipo : 'sinfecha';
+    return {
+      id, materia: String(d.materia ?? ''), nombre: String(d.nombre ?? 'Sin nombre'), detalle: String(d.detalle ?? ''),
+      peso: numONull(d.peso), nota: numONull(d.nota), sobre: numONull(d.sobre), tipo,
+      inicio: esISO(d.inicio) ? d.inicio : null, fin: esISO(d.fin) ? d.fin : null,
+      dias: Array.isArray(d.dias) ? d.dias.filter(x => x && esISO(x.fecha)).map(x => ({ fecha: x.fecha, etiqueta: String(x.etiqueta ?? '') })) : [],
+    };
+  }
+
+  // Versión que funciona sola (por ejemplo en GitHub Pages): guarda en el almacenamiento del navegador
+  // con la misma forma de uso que la base de datos de la versión publicada en Claude.
+  function almacenLocal(semilla) {
+    const CLAVE = 'calev:datos:v1';
+    const esObj = o => !!o && typeof o === 'object' && !Array.isArray(o);
+    const valido = o => esObj(o) && esObj(o.materias) && esObj(o.evaluaciones) && Object.values(o.materias).every(esObj) && Object.values(o.evaluaciones).every(esObj);
+    const copia = o => JSON.parse(JSON.stringify(o));
+    const tomar = o => ({ materias: copia(o.materias), evaluaciones: copia(o.evaluaciones) });
+    let datos = null;
+    try { const t = localStorage.getItem(CLAVE); if (t) { const o = JSON.parse(t); if (valido(o)) datos = tomar(o); } } catch { datos = null; }
+    if (!datos) datos = valido(semilla) ? tomar(semilla) : { materias: {}, evaluaciones: {} };
+    const oyentes = { materias: [], evaluaciones: [] };
+    const meta = { fromCache: false, hasPendingWrites: false };
+    const foto = col => ({ docs: Object.keys(datos[col]).sort().map(id => ({ id, exists: true, data: () => datos[col][id], metadata: meta })), metadata: meta });
+    const avisar = () => { for (const col of ['materias', 'evaluaciones']) for (const f of oyentes[col]) f(foto(col)); };
+    const persistir = () => { try { localStorage.setItem(CLAVE, JSON.stringify(datos)); E.sinGuardado = false; } catch { E.sinGuardado = true; } };
+    let n = 0;
+    const nuevoId = () => 'n' + Date.now().toString(36) + (n++).toString(36) + Math.random().toString(36).slice(2, 6);
+    window.addEventListener('storage', ev => {
+      if (ev.key !== CLAVE || !ev.newValue) return;
+      try { const o = JSON.parse(ev.newValue); if (valido(o)) { datos = tomar(o); avisar(); } } catch { /* se ignora un valor ilegible */ }
+    });
+    return {
+      valido,
+      collection(col) {
+        return {
+          onSnapshot(next) { oyentes[col].push(next); Promise.resolve().then(() => next(foto(col))); return () => {}; },
+          doc(id) {
+            id = id || nuevoId();
+            return {
+              id,
+              set: async d => { datos[col][id] = copia(d); persistir(); avisar(); },
+              delete: async () => { delete datos[col][id]; persistir(); avisar(); },
+            };
+          },
+        };
+      },
+      exportar: () => ({ app: 'calendario-evaluaciones', version: 1, exportado: new Date().toISOString(), ...tomar(datos) }),
+      importar: o => { datos = tomar(o); persistir(); avisar(); },
+    };
+  }
+
+  let pendiente = null;
+  const msgDatos = m => { const p = $('#datos-msg'); p.textContent = m; p.hidden = !m; };
+  $('#btn-exportar').addEventListener('click', async () => {
+    if (!E.local) return;
+    const nombre = `calendario-evaluaciones-${hoy()}.json`;
+    const archivo = new File([JSON.stringify(E.local.exportar(), null, 2)], nombre, { type: 'application/json' });
+    msgDatos('');
+    try {
+      if (navigator.canShare && navigator.canShare({ files: [archivo] })) { await navigator.share({ files: [archivo], title: 'Calendario de evaluaciones' }); return; }
+    } catch (e) { if (e && e.name === 'AbortError') return; }
+    const url = URL.createObjectURL(archivo);
+    const a = document.createElement('a');
+    a.href = url; a.download = nombre;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    toast('Copia exportada');
+  });
+  $('#btn-importar').addEventListener('click', () => $('#inp-importar').click());
+  $('#inp-importar').addEventListener('change', async ev => {
+    const f = ev.target.files && ev.target.files[0];
+    ev.target.value = '';
+    if (!f || !E.local) return;
+    try {
+      const o = JSON.parse(await f.text());
+      if (!E.local.valido(o)) throw new Error('formato');
+      pendiente = o;
+      const nm = Object.keys(o.materias).length, ne = Object.keys(o.evaluaciones).length;
+      $('#datos-pregunta').textContent = `La copia trae ${nm} ${nm === 1 ? 'materia' : 'materias'} y ${ne} ${ne === 1 ? 'evaluación' : 'evaluaciones'}. Reemplazará lo que hay en este dispositivo.`;
+      $('#datos-confirmar').hidden = false;
+      msgDatos('');
+    } catch {
+      pendiente = null;
+      $('#datos-confirmar').hidden = true;
+      msgDatos('Ese archivo no es una copia de este calendario. Elige el archivo .json que exportaste.');
+    }
+  });
+  $('#datos-no').addEventListener('click', () => { pendiente = null; $('#datos-confirmar').hidden = true; });
+  $('#datos-si').addEventListener('click', () => {
+    if (!pendiente || !E.local) return;
+    E.local.importar(pendiente);
+    pendiente = null;
+    $('#datos-confirmar').hidden = true;
+    toast('Datos importados');
+  });
+
+  async function conectar() {
+    let db = null, user = null;
+    if (window.CALENDARIO_LOCAL) { db = E.local = almacenLocal(window.CALENDARIO_LOCAL); }
+    else { try { db = (window.claude && typeof window.claude.use === 'function') ? await window.claude.use('db') : null; } catch { db = null; } }
+    if (!db) { E.sinDb = true; render(); return; }
+    E.db = db;
+    if (!E.local) { try { user = await window.claude.use('user'); } catch { user = null; } }
+    if (user && typeof user.can === 'function') user.can('data.write').then(v => { if (v === false) { E.puedeEditar = false; render(); } });
+
+    const reloj = setTimeout(() => { if (!(E.conf.mat && E.conf.eva)) { E.lento = true; render(); } }, 10000);
+    const confirmar = () => { if (E.conf.mat && E.conf.eva) { clearTimeout(reloj); E.lento = false; } };
+    const fallo = () => { clearTimeout(reloj); E.lento = false; E.errorDatos = true; E.rec.mat = E.rec.eva = true; E.puedeEditar = false; render(); };
+
+    db.collection('materias').onSnapshot(snap => {
+      E.materias = snap.docs.map(d => normMateria(d.id, d.data() || {})).sort((a, b) => a.orden - b.orden || a.nombre.localeCompare(b.nombre, 'es'));
+      E.rec.mat = true;
+      if (!snap.metadata.fromCache) { E.conf.mat = true; confirmar(); }
+      render();
+    }, fallo);
+    db.collection('evaluaciones').onSnapshot(snap => {
+      E.evals = snap.docs.map(d => normEval(d.id, d.data() || {}));
+      E.rec.eva = true;
+      if (!snap.metadata.fromCache) { E.conf.eva = true; confirmar(); }
+      render();
+    }, fallo);
+  }
+
+  render();
+  conectar();
+})();
+</script>
+<script>if ('serviceWorker' in navigator) window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });</script>
+</body>
+</html>
